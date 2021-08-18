@@ -1,4 +1,2 @@
 # Byte-compiled files
 ./api/__pycache__/
-# Production scripts and environment
-./prodscripts/
