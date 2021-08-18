@@ -1,0 +1,49 @@
+
+version: "3.7"
+
+services:
+    nginx:
+        image: konnyb/ecoindex-stack:nginx
+        restart: always
+        ports:
+          - 80:80
+          - 443:443
+        depends_on:
+          - api
+        networks:
+          - frontend-network
+
+    api:
+        image: konnyb/ecoindex-stack:web
+        restart: always
+        volumes:
+          - migrations:/prodscripts/migrations
+        environment:
+          - PORT=8080
+        command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8080 --reload"
+        env_file:
+          - ./prodscripts/env/.env
+        expose:
+          - 8080
+        depends_on:
+          - db
+        networks:
+          - backend-network
+          - frontend-network
+        
+    db:
+        image: postgres:13-alpine
+        restart: always
+        volumes:
+          - postgres_data:/ecoindex-db/data
+        env_file:
+          - ./prodscripts/env/.env
+        networks:
+          - backend-network
+    
+volumes:
+    postgres_data:
+    migrations:
+networks:
+    backend-network:
+    frontend-network:
