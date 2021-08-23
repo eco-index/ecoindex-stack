@@ -2,6 +2,18 @@
 version: "3.7"
 
 services:
+    nginx:
+        build:
+          context: ./nginx
+          dockerfile: Dockerfile
+        restart: always
+        ports:
+          - 80:80
+        depends_on:
+          - api
+        networks:
+          - frontend-network
+
     api:
         build: 
           context: ./web
@@ -10,12 +22,12 @@ services:
         volumes:
           - ./prodscripts/migrations:/web/migrations
         environment:
-          - PORT=8080
-        command: uvicorn app.api.server:app --reload --workers 1 --host 0.0.0.0 --port 8080
+          - PORT=8000
+        command: bash -c "alembic upgrade head && uvicorn app.api.server:app --host 0.0.0.0 --port 8000 --reload"
         env_file:
           - ./prodscripts/env/.env
         expose:
-          - 8080
+          - 8000
         depends_on:
           - db
         networks:
@@ -26,14 +38,13 @@ services:
         image: postgres:13-alpine
         volumes:
           - postgres_data:/db/data
-        ports:
-          - "5432:5432"
+        expose:
+          - 5000
         env_file:
           - ./prodscripts/env/.env
         networks:
           - backend-network
 
-    
 volumes:
     postgres_data:
     migrations:
