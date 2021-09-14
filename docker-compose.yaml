@@ -38,11 +38,11 @@ services:
           - frontend-network
         
     db:
-        image: postgres:13-alpine
+        image: postgis/postgis
         volumes:
           - postgres_data:/db/data
-        expose:
-          - 5432
+        ports:
+          - 5432:5432
         env_file:
           - ./prodscripts/env/.env
         networks:
