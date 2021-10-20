@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from app.api.routes.cleanings import router as cleanings_router
+from app.api.routes.occurrence import router as occurrence_router
 
 router = APIRouter()
 
-router.include_router(cleanings_router, prefix="/cleanings", tags=["cleanings"])
+router.include_router(occurrence_router, prefix="/occurrence", tags=["occurrence"])
