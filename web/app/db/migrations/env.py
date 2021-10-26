@@ -4,7 +4,7 @@ import os
 
 import alembic
 from sqlalchemy import engine_from_config, create_engine, pool
-from psycopg2 import DatabaseError
+from psycopg2 import DatabaseError, connect
 
 from logging.config import fileConfig
 import logging
@@ -25,7 +25,7 @@ def run_migrations_online() -> None:
     """
     Run migrations in 'online' mode
     """
-    DB_URL = TEST_DATABASE_URL if os.environ.get("TESTING") else str(DATABASE_URL)
+    DB_URL = str(TEST_DATABASE_URL) if os.environ.get("TESTING") else str(DATABASE_URL)
     
     # handle testing config for migrations
     if os.environ.get("TESTING"):
@@ -33,9 +33,15 @@ def run_migrations_online() -> None:
         default_engine = create_engine(str(DATABASE_URL), isolation_level="AUTOCOMMIT")
         # drop testing db if it exists and create a fresh one
         with default_engine.connect() as default_conn:
+            default_conn.execute(f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{POSTGRES_TEST_DB}'")
             default_conn.execute(f"DROP DATABASE IF EXISTS {POSTGRES_TEST_DB}")
             default_conn.execute(f"CREATE DATABASE {POSTGRES_TEST_DB}")
-    
+        #reconnect to TestDB and create postGIS extension
+        default_engine = create_engine(str(TEST_DATABASE_URL), isolation_level="AUTOCOMMIT")
+        with default_engine.connect() as default_conn:
+            default_conn.execute("CREATE EXTENSION postgis;")
+            default_conn.execute("CREATE EXTENSION postgis_topology;")
+
     connectable = config.attributes.get("connection", None)
     config.set_main_option("sqlalchemy.url", DB_URL)  
 

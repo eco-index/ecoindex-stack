@@ -1,4 +1,5 @@
 import pytest
+import json
 
 from httpx import AsyncClient
 from fastapi import FastAPI
@@ -6,12 +7,7 @@ from fastapi import FastAPI
 from starlette.status import (
     HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
 )
-from app.models.occurrence import OccurrencePublic, OccurrenceCreate
-
-class TestGetOccurrence:
-    async def test_get_all_occurrences(self, app: FastAPI, client: AsyncClient, test_occurrence: OccurrencePublic) -> None:
-        res = await client.get(app.url_path_for("occurrence:get_all_occurrences"))
-        assert res.status_code == HTTP_200_OK
+from app.models.occurrence import OccurrencePublic, OccurrenceCreate, OccurrenceJson
         
     # @pytest.mark.parametrize(
     #     "id, status_code",
@@ -33,33 +29,28 @@ pytestmark = pytest.mark.asyncio
 
 @pytest.fixture
 def new_occurrence():
-    return OccurrenceCreate(
-        scientific_name="fake scientific name",
-        observation_count=1,
-        observation_date=2020-10-19,
+    return OccurrenceJson(
+        scientific_name='fake scientific name',
+        observation_date='2020-10-19',
         taxon_rank='fake taxon rank'
     )
-
 
 class TestOccurrenceRoutes:
     @pytest.mark.asyncio
     async def test_routes_exist(self, app: FastAPI, client: AsyncClient) -> None:
         res = await client.post(app.url_path_for("occurrence:create_occurrence"), json={})
         assert res.status_code != HTTP_404_NOT_FOUND
-    @pytest.mark.asyncio
-    async def test_invalid_input_raises_error(self, app: FastAPI, client: AsyncClient) -> None:
-        res = await client.post(app.url_path_for("occurrence:create_occurence"), json={})
-        assert res.status_code == HTTP_422_UNPROCESSABLE_ENTITY
 
 class TestCreateOccurrence:
     async def test_valid_input_creates_occurrence(
-        self, app: FastAPI, client: AsyncClient, new_occurrence: OccurrenceCreate
+        self, app: FastAPI, client: AsyncClient, new_occurrence: OccurrenceJson
     ) -> None:
+        print(new_occurrence.dict())
         res = await client.post(
-            app.url_path_for("occurrence:create_occurrence"), json={"new_occurrence:": new_occurrence.dict()}
+            app.url_path_for("occurrence:create_occurrence"), json=new_occurrence.dict()
         )
         assert res.status_code == HTTP_201_CREATED
-        created_occurrence = OccurrenceCreate(**res.json())
+        created_occurrence = OccurrenceJson(**res.json())
         assert created_occurrence == new_occurrence
 
     @pytest.mark.parametrize(
@@ -67,9 +58,9 @@ class TestCreateOccurrence:
         (
             (None, 422),
             ({}, 422),
-            ({"scientfic_name": "test_name"}, 422),
+            ({"scientific_name": "test_name"}, 422),
             ({"observation_count": 2}, 422),
-            ({"scientifc_name": "test_name", "taxon_rank": "test"}, 422),
+            ({"scientific_name": "test_name", "taxon_rank": "test"}, 422),
         ),
     )
     async def test_invalid_input_raises_error(
@@ -79,3 +70,9 @@ class TestCreateOccurrence:
             app.url_path_for("occurrence:create_occurrence"), json={"new_occurrence": invalid_payload}
         )
         assert res.status_code == status_code
+
+class TestGetOccurrence:
+    async def test_get_all_occurrences(self, app: FastAPI, client: AsyncClient) -> None:
+        res = await client.get(app.url_path_for("occurrence:get_all_occurrences"))
+        assert res.status_code == HTTP_200_OK
+

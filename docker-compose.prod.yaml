@@ -17,7 +17,7 @@ services:
         image: konnyb/ecoindex-stack:web
         restart: always
         volumes:
-          - migrations:/prodscripts/migrations
+          - ../prodscripts/migrations:/web/migrations
         environment:
           - PORT=8080
         command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8080 --reload"
@@ -35,9 +35,9 @@ services:
         image: postgres:13-alpine
         restart: always
         volumes:
-          - postgres_data:/ecoindex-db/data
+          - ../ecoindex-db:/var/lib/postgresql/data
         env_file:
-          - ./prodscripts/env/.env
+          - ../prodscripts/env/.env
         networks:
           - backend-network
     

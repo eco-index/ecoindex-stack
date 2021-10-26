@@ -40,10 +40,7 @@ services:
     db:
         image: postgis/postgis
         volumes:
-          - postgres_data:/db/data
-          - /etc/postgresql
-          - /var/log/postgresql
-          - /var/lib/postgresql
+          - postgres_data:/var/lib/postgresql/data
         ports:
           - 5432:5432
         env_file:
@@ -53,7 +50,6 @@ services:
 
 volumes:
     postgres_data:
-    migrations:
 networks:
     backend-network:
     frontend-network:

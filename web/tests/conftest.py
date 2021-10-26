@@ -19,7 +19,7 @@ from app.db.repositories.occurrence import OccurrenceRepository
 def apply_migrations():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     os.environ["TESTING"] = "1"
-    config = Config("alembic.ini")
+    config = Config("alembic.ini")  
     alembic.command.upgrade(config, "head")
     yield
     alembic.command.downgrade(config, "base")
@@ -45,14 +45,3 @@ async def client(app: FastAPI) -> AsyncClient:
             headers={"Content-Type": "application/json"}
         ) as client:
             yield client
-
-@pytest.fixture
-async def test_occurrence(db: Database) -> OccurrencePublic:
-    occurrence_repo = OccurrenceRepository(db)
-    new_occurrence = OccurrenceCreate(
-        scientific_name="fake scientific name",
-        observation_count=1,
-        observation_date=2020-10-19,
-        taxon_rank='fake taxon rank'
-    )
-    return await occurrence_repo.create_occurrence(new_occurrence=new_occurrence)

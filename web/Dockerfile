@@ -21,3 +21,4 @@ RUN ["chmod", "+x", "/web/entrypoint.sh"]
 
 # run entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
+
