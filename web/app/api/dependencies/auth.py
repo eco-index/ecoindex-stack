@@ -22,7 +22,6 @@ async def get_user_from_token(
     return user
     
 def get_current_active_user(current_user: UserInDB = Depends(get_user_from_token)) -> Optional[UserInDB]:
-    print("How about there?")
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 

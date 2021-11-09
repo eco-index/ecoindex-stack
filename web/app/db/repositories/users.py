@@ -14,7 +14,7 @@ GET_USER_QUERY = """
 REGISTER_NEW_USER_QUERY = """
     INSERT INTO users (username, email, password, salt)
     VALUES (:username, :email, :password, :salt)
-    RETURNING id, username, email, email_verified, password, salt, disabled, is_superuser, is_admin;
+    RETURNING id, username, email, email_verified, password, salt, disabled, role;
 """
 
 GET_USER_BY_EMAIL_QUERY = """

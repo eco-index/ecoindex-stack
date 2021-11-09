@@ -10,6 +10,7 @@ from app.models.security import User, UserCreate, AccessToken, UserPublic, UserI
 from app.api.dependencies.database import get_repository
 from app.api.dependencies.auth import get_current_active_user
 from app.db.repositories.users import UserRepository
+from app.models.role import Role
 
 router = APIRouter()
 
@@ -21,7 +22,13 @@ async def get_currently_authenticated_user(current_user: UserInDB = Depends(get_
 async def register_new_user(
     new_user: UserCreate = Body(..., embed=True),
     user_repo: UserRepository = Depends(get_repository(UserRepository)),
+    current_user: UserInDB = Depends(get_current_active_user)
 ) -> User:
+    if current_user.role == "GUEST":
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail="Not authorised to register users.",
+        )
     created_user = await user_repo.register_new_user(new_user=new_user)
     access_token = AccessToken(
         access_token=auth_service.create_access_token_for_user(user=created_user), token_type="bearer"

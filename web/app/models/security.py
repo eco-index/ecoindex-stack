@@ -3,6 +3,7 @@ from pydantic import EmailStr, constr
 from app.models.core import DateTimeModelMixin, IDModelMixin, CoreModel
 from app.core.config import JWT_AUDIENCE, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import datetime, timedelta
+from app.models.role import Role
 
 # User Classes
 
@@ -11,8 +12,7 @@ class User(CoreModel):
     username: Optional[str]
     email_verified: bool = False
     disabled: bool = False
-    is_superuser: bool = False
-    is_admin: bool = False
+    role: str = Role.GUEST["name"]
 
 class UserCreate(CoreModel):
     """
@@ -54,7 +54,9 @@ class JWTMeta(CoreModel):
     exp: float = datetime.timestamp(datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
 
 class JWTCreds(CoreModel):
-    """How we'll identify users"""
+    """
+    How we'll identify users
+    """
     sub: EmailStr
     username: str
 
