@@ -35,4 +35,4 @@ jobs:
           context: ./web
           file: ./web/Dockerfile
           push: true
-          tags: ecoindex/ecoindex-backend:appv$(date +%s)
+          tags: ecoindex/ecoindex-backend:$(date +%s)
