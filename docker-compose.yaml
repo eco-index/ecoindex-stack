@@ -2,54 +2,86 @@
 version: "3.7"
 
 services:
-    nginx:
-        build:
-          context: ./nginx
-          dockerfile: Dockerfile
-        restart: always
-        volumes:
-          - ./prodscripts/env/ssl:/etc/ssl
-        ports:
-          - 80:80
-          - 443:443
-        depends_on:
-          - api
-        networks:
-          - frontend-network
+  traefik:
+      image: traefik:latest
+      command:
+        - "--accesslog"
+        - "--api.insecure=true"
+        - "--providers.docker=true"
+        - "--entrypoints.web.address=:80"
+        - "--providers.docker.exposedbydefault=false"
+        - "--providers.docker.network=frontend-network"
+      ports:
+        - 80:80
+        - 8080:8080
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        # - traefik-public-certificates:/certificates
+      depends_on:
+        - api
+        - frontend
+      networks:
+        - frontend-network
 
-    api:
-        build: 
-          context: ./web
-          dockerfile: Dockerfile
-        restart: always
-        volumes:
-          - ./prodscripts/migrations:/web/migrations
-        environment:
-          - PORT=8000
-        command: bash -c "alembic upgrade head && uvicorn app.api.server:app --host 0.0.0.0 --port 8000 --reload"
-        env_file:
-          - ./prodscripts/env/.env
-        ports:
-          - 8000:8000
-        depends_on:
-          - db
-        networks:
-          - backend-network
-          - frontend-network
-        
-    db:
-        image: postgis/postgis
-        volumes:
-          - postgres_data:/var/lib/postgresql/data
-        ports:
-          - 5432:5432
-        env_file:
-          - ./prodscripts/env/.env
-        networks:
-          - backend-network
+  frontend:
+      stdin_open: true
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+      restart: always
+      expose:
+        - 3000
+      volumes:
+        - /app/node_modules
+        - ./frontend:/app
+      networks:
+        - frontend-network
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/frontend`)"
+        - "traefik.http.routers.frontend.entrypoints=web"
+
+  api:
+      build: 
+        context: ./backend
+        dockerfile: Dockerfile
+      restart: always
+      volumes:
+        - ./prodscripts/migrations:/backend/migrations
+        - ./prodscripts/occurrence_download:/backend/occurrence_download
+      environment:
+        - PORT=8000
+      command: bash -c "alembic upgrade head && uvicorn app.api.server:app --root-path /api/v1 --host 0.0.0.0 --port 8000 --reload"
+      env_file:
+        - ./prodscripts/env/.env
+      expose:
+        - 8000
+      depends_on:
+        - db
+      networks:
+        - frontend-network
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.backend.rule=Host(`localhost`) && PathPrefix(`/api/v1`)"
+        - "traefik.http.routers.backend.entrypoints=web"
+        - "traefik.http.middlewares.api-stripprefix.stripPrefix.prefixes=/api/v1"
+        - "traefik.http.routers.backend.middlewares=api-stripprefix"
+          
+  db:
+      image: postgis/postgis
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      ports:
+        - 5432:5432
+      env_file:
+        - ./prodscripts/env/.env
+      networks:
+        - frontend-network
 
 volumes:
     postgres_data:
+    # traefik-public-certificates:
 networks:
-    backend-network:
     frontend-network:
