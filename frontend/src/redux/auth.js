@@ -1,13 +1,16 @@
 import initialState from "./initialState"
 import axios from "axios" 
 import apiClient from "../services/apiClient"
+
 export const REQUEST_LOGIN = "@@auth/REQUEST_LOGIN"
 export const REQUEST_LOGIN_FAILURE = "@@auth/REQUEST_LOGIN_FAILURE"
 export const REQUEST_LOGIN_SUCCESS = "@@auth/REQUEST_LOGIN_SUCCESS"
 export const REQUEST_LOG_USER_OUT = "@@auth/REQUEST_LOG_USER_OUT"
+
 export const FETCHING_USER_FROM_TOKEN = "@@auth/FETCHING_USER_FROM_TOKEN"
 export const FETCHING_USER_FROM_TOKEN_SUCCESS = "@@auth/FETCHING_USER_FROM_TOKEN_SUCCESS"
 export const FETCHING_USER_FROM_TOKEN_FAILURE = "@@auth/FETCHING_USER_FROM_TOKEN_FAILURE"
+
 export const REQUEST_USER_SIGN_UP = "@@auth/REQUEST_USER_SIGN_UP"
 export const REQUEST_USER_SIGN_UP_SUCCESS = "@@auth/REQUEST_USER_SIGN_UP_SUCCESS"
 export const REQUEST_USER_SIGN_UP_FAILURE = "@@auth/REQUEST_USER_SIGN_UP_FAILURE"

@@ -20,7 +20,10 @@ export default function occurrenceReducer(state = initialState.occurrences, acti
                 ...state,
                 isLoading: false,
                 error: null,
-                data: action.data,
+                data: {
+                    ...state.data,
+                    [action.data.id]: action.data
+                }
             }
         case REQUEST_DATA_FAILURE:
             return{
@@ -31,8 +34,7 @@ export default function occurrenceReducer(state = initialState.occurrences, acti
         case FETCH_DATA_BY_ID:
             return{
                 ...state,
-                isLoading: true,
-                data: action.data
+                isLoading: true
             }
         case FETCH_DATA_BY_ID_SUCCESS:
             return{
@@ -66,13 +68,13 @@ Actions.requestData = ({ classification_level, classification_name, year, startD
         options: {
             data: { classification_level, classification_name, year, startDate, endDate, location_name, location_type },
             params: {},
-        },
+        }
     })
 }
 
 Actions.retrieveData = ({ download_id }) => {
     return apiClient({
-        url: `/occurrence/download/${download_id}/`,
+        url: `/occurrence/download/${download_id}`,
         method: `GETFILE`,
         types: {
             REQUEST: FETCH_DATA_BY_ID,

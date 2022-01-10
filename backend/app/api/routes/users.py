@@ -43,16 +43,16 @@ async def user_login_with_email_and_password(
     access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), token_type="bearer")
     return access_token
 
-@router.post("/updaterole", response_model=UserUpdateRole, name="users:update_role")
+@router.put("/updaterole", response_model=UserUpdateRole, name="users:update_role")
 async def update_role_of_user(
     current_user: UserInDB = Depends(get_current_active_user), 
     update_role_user: UserUpdateRole = Body(..., embed=True), 
     user_repo: UserRepository = Depends(get_repository(UserRepository))
     ) -> User:
-    if current_user.role == "GUEST":
+    if current_user.role != "ADMIN" and current_user.role != "SUPER_ADMIN":
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
-            detail="Not authorized to retrieve occurrences."
+            detail="Not authorized to update roles."
         )
     updated_role_user = await user_repo.update_user_role(update_role_user=update_role_user)
     return updated_role_user

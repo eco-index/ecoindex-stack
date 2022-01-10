@@ -31,6 +31,7 @@ class UserUpdate(CoreModel):
 class UserUpdateRole(CoreModel):
     """
     For Admins to update User Role
+    User, Admin, or Guest
     """
     email: EmailStr
     role: str

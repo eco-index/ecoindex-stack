@@ -1,4 +1,5 @@
 import React from "react"
+import moment from "moment"
 import { connect } from "react-redux"
 import { Actions as occurrenceActions } from "../../redux/occurrence"
 import {
@@ -15,7 +16,7 @@ import validation from "../../utils/validation"
 import styled from "styled-components"
 import { extractErrorMessages } from "../../utils/errors"
 
-const RegistrationFormWrapper = styled.div`
+const RetrieveDataFormWrapper = styled.div`
   padding: 2rem;
 `
 function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveData, data}) {
@@ -59,6 +60,8 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
     //if classification level is selected but no classification name
     if(form.classificationLevel && !form.classificationName){
       form.classificationLevel = ""
+      setErrors((errors) => ({ ...errors, form: `Please specify a classification name` }))
+      return
     }
     if(!form.year){
       //if start date is selected but no end date, and vice versa
@@ -70,31 +73,52 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
         setErrors((errors) => ({ ...errors, form: `Please select a start date` }))
         return
       }
+      if(form.endDate < form.startDate){
+        setErrors((errors) => ({ ...errors, form: `Select a start date before the end date`}))
+        return
+      }
     }
     setHasSubmitted(true)
-
+    var year = 0
+    if(form.year){
+      year = form.year
+    }
+    var startDate = ""
+    var endDate = ""
+    if(form.startDate && form.endDate){
+      startDate = moment(form.startDate).format('YYYY-MM-DD')
+      endDate = moment(form.endDate).format('YYYY-MM-DD')
+    }
     const res = await requestData({
       classification_level: form.classificationLevel,
       classification_name: form.classificationName,
-      year: form.year,
-      startDate: form.startDate,
-      endDate: form.endDate,
+      year: year,
+      startDate: startDate,
+      endDate: endDate,
       location_name: form.locationName,
       location_type: form.locationType
     })
-    if(res?.success) {
-      const downloadID = data?.download_id
-      //code for a popover with the link?
+    if(res.success) {
+      const downloadID = res.data?.download_id
       const action = await retrieveData({download_id: downloadID}) 
-      if(action?.success){
-        const href = window.URL.createObjectURL(blob)
+      if(action.success) {
+        const href = window.URL.createObjectURL(new Blob([data]))
         const link = document.createElement('a')
         link.href = href
         link.setAttribute('download', 'download.csv') //or any other extension
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+        //redirect
       }
+      else{
+        setErrors((errors) => ({ ...errors, form: "Submission failed, please check input fields"}))
+        return
+      }
+    }
+    else{
+      setErrors((errors) => ({ ...errors, form: "Submission failed, please check input fields"}))
+      return
     }
   }
   const getFormErrors = () => {
@@ -102,7 +126,7 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
     if (errors.form) {
       formErrors.push(errors.form)
     }
-    if (hasSubmitted && occurrenceError.length) {
+    if (hasSubmitted && occurrenceErrorList.length) {
       return formErrors.concat(occurrenceErrorList)
     }
     return formErrors
@@ -111,12 +135,12 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
   
 
   return (
-    <RegistrationFormWrapper>
+    <RetrieveDataFormWrapper>
       <EuiForm
         component="form"
         onSubmit={handleSubmit}
-        // isInvalid={Boolean(getFormErrors().length)}
-        // error={getFormErrors()}
+        isInvalid={Boolean(getFormErrors().length)}
+        error={getFormErrors()}
       >
         <EuiFormRow
           label="Classification Level"
@@ -187,16 +211,18 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
               <EuiSplitPanel.Inner>
                 <EuiDatePicker
                   placeholder="Pick a start date"
-                  value={form.startDate}
-                  onChange={(e) => handleInputChange("startDate", e.target.value)}
+                  dateFormat="YYYY-MM-DD"
+                  selected={form.startDate}
+                  onChange={(selected) => handleInputChange("startDate", selected)}
                   isInvalid={Boolean(errors.startDate)}
                 />
               </EuiSplitPanel.Inner>
               <EuiSplitPanel.Inner>
                 <EuiDatePicker
                   placeholder="Pick a end date"
-                  value={form.endDate}
-                  onChange={(e) => handleInputChange("endDate", e.target.value)}
+                  dateFormat="YYYY-MM-DD"
+                  selected={form.endDate}
+                  onChange={(selected) => handleInputChange("endDate", selected)}
                   isInvalid={Boolean(errors.endDate)}
                 />
               </EuiSplitPanel.Inner>
@@ -237,11 +263,12 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
         </EuiButton>
       </EuiForm>
       <EuiSpacer size="xl" />
-    </RegistrationFormWrapper>
+    </RetrieveDataFormWrapper>
   )
 }
 
-export default connect(state => ({
+export default connect(
+  (state) => ({
     occurenceError: state.occurrences.error,
     isLoading: state.occurrences.isLoading,
     data: state.occurrences.data,

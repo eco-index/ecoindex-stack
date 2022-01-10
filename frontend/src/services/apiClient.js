@@ -4,6 +4,7 @@ const getClient = (token = null) => {
   const defaultOptions = {
     headers: {
       "Content-Type": "application/json",
+      'Cache-Control' : 'no-cache',
       Authorization: token ? `Bearer ${token}` : ""
     }
   }
@@ -42,18 +43,24 @@ const apiClient = ({
   return async (dispatch) => {
     const token = localStorage.getItem("access_token")
     const client = getClient(token)
+
     dispatch({ type: REQUEST })
     const urlPath = formatURL(url, params)
+
     try {
       const res = await client[method.toLowerCase()](urlPath, data)
+
       dispatch({ type: SUCCESS, data: res.data })
+
       return onSuccess({ type: SUCCESS, ...res })
     } catch (error) {
       console.log(error)
+
       dispatch({
         type: FAILURE,
         error: error?.response?.data ? error.response.data : error
       })
+
       return onFailure({ type: FAILURE, status: error.status, error: error.response })
     }
   }

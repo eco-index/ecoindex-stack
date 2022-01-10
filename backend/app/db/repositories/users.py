@@ -22,7 +22,7 @@ GET_USER_BY_EMAIL_QUERY = """
 """
 
 UPDATE_USER_ROLE_QUERY="""
-    UPDATE users SET role = :role WHERE email = :email; RETURNING email, role;
+    UPDATE users SET role = :role WHERE email = :email RETURNING email, role;
 """
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -93,7 +93,12 @@ class UserRepository(BaseRepository):
         user_record = await self.get_user_by_email(email=update_role_user.email)
         if not user_record:
             return None
-        updated_user = await self.update_user_role(email=update_role_user.email, role=update_role_user.role)
+        if update_role_user.role != "ADMIN" and update_role_user.role != "USER" and update_role_user.role != "GUEST":
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Not a valid user role"
+            )
+        updated_user = await self.db.fetch_one(query=UPDATE_USER_ROLE_QUERY, values={"email": update_role_user.email, "role": update_role_user.role})
         return updated_user
         
         
