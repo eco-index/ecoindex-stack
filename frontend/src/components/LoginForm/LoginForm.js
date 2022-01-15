@@ -1,5 +1,6 @@
 import React from "react"
 import { connect } from "react-redux"  
+import { useToasts } from "../../hooks/ui/useToasts" 
 import { Actions as authActions, FETCHING_USER_FROM_TOKEN_SUCCESS } from "../../redux/auth"
 import { useNavigate } from "react-router-dom"
 import {
@@ -24,6 +25,7 @@ const NeedAccountLink = styled.span`
 function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLogin }) { 
   const [hasSubmitted, setHasSubmitted] = React.useState(false) 
   const navigate = useNavigate()
+  const { addToast } = useToasts()
   const [form, setForm] = React.useState({
     email: "",
     password: ""
@@ -38,9 +40,17 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
   }
   React.useEffect(() => {
     if (user?.email && isAuthenticated) {
+      addToast({
+        id: `auth-toast-loggedin`,
+        title: `Logged In Successfully`,
+        color: "Success",
+        iconType: "alert",
+        toastLifeTimeMs: 15000,
+      })
       navigate("/frontend")
     }
   }, [user, navigate, isAuthenticated])
+
   const handleInputChange = (label, value) => {
     validateInput(label, value)
     setForm((form) => ({ ...form, [label]: value }))
@@ -59,6 +69,7 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
     // reset the password form state if the login attempt is not successful
     if (action?.type !== FETCHING_USER_FROM_TOKEN_SUCCESS) {
       setForm(form => ({ ...form, password: "" }))
+      return
     }
   }
   const getFormErrors = () => {

@@ -9,7 +9,8 @@ import {
   ProtectedRoute,  
   ProtectedRouteLanding,
   RegistrationPage,
-  RetrieveDataPage
+  RetrieveDataPage,
+  UserManagementPage
 } from "../../components"
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/frontend/*" element={<NotFoundPage />} />
           <Route path="/frontend/retrievedata" element={<ProtectedRoute component ={RetrieveDataPage}/>} />
           <Route path="/frontend/helppage" element={<HelpPage/>} />
+          <Route path="/frontend/usermanagement" element={<ProtectedRoute component = {UserManagementPage}/>} />
         </Routes>
       </Layout>
     </BrowserRouter>

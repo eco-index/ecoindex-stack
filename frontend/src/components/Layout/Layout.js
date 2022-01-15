@@ -1,6 +1,8 @@
 import React from "react"
 import { Helmet } from "react-helmet"
 import { Navbar } from "../../components"
+import { EuiGlobalToastList } from "@elastic/eui"  
+import { useToasts } from "../../hooks/ui/useToasts" 
 import styled, { ThemeProvider } from "styled-components"
 import euiVars from "@elastic/eui/dist/eui_theme_light.json"
 import "@elastic/eui/dist/eui_theme_light.css"
@@ -27,6 +29,8 @@ const StyledMain = styled.main`
   }
 `
 export default function Layout({ children }) {
+  const { toasts, removeToast } = useToasts()  
+
   return (
     <React.Fragment>
       <Helmet>
@@ -38,6 +42,13 @@ export default function Layout({ children }) {
         <StyledLayout>
           <Navbar />
           <StyledMain>{children}</StyledMain>
+          <EuiGlobalToastList
+            toasts={toasts}
+            dismissToast={(toastId) => removeToast(toastId)}
+            toastLifeTimeMs={15000}
+            side="right"
+            className="auth-toast-list"
+          />
         </StyledLayout>
       </ThemeProvider>
     </React.Fragment>

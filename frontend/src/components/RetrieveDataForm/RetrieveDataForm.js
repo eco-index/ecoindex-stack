@@ -1,6 +1,7 @@
 import React from "react"
 import moment from "moment"
 import { connect } from "react-redux"
+import { useToasts } from "../../hooks/ui/useToasts" 
 import { Actions as occurrenceActions } from "../../redux/occurrence"
 import {
   EuiButton,
@@ -32,6 +33,7 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
   const [errors, setErrors] = React.useState({})
   const [hasSubmitted, setHasSubmitted] = React.useState(false) 
   const occurrenceErrorList = extractErrorMessages(occurrenceError) 
+  const { addToast } = useToasts()
   
   const validateInput = (label, value) => {
     // grab validation function and run it on input if it exists
@@ -102,6 +104,14 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
       const downloadID = res.data?.download_id
       const action = await retrieveData({download_id: downloadID}) 
       if(action.success) {
+        addToast({
+          id: `auth-toast-download-successful`,
+          title: "Data Retrieval Successful",
+          color: "success",
+          iconType: "alert",
+          toastLifeTimeMs: 15000,
+          text: "Download should begin momentarily",
+        })
         const href = window.URL.createObjectURL(new Blob([data]))
         const link = document.createElement('a')
         link.href = href

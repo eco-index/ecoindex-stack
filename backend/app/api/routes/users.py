@@ -2,11 +2,12 @@ from fastapi import APIRouter
 
 from fastapi import Depends, HTTPException, Body
 from fastapi.security import OAuth2PasswordRequestForm
-from starlette.status import HTTP_201_CREATED, HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_201_CREATED, HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND
+from typing import List
 
 from app.api.services import auth_service
 
-from app.models.security import User, UserCreate, AccessToken, UserPublic, UserInDB, UserUpdateRole
+from app.models.security import User, UserCreate, AccessToken, UserPublic, UserInDB, UserUpdateRole, UserDisable
 from app.api.dependencies.database import get_repository
 from app.api.dependencies.auth import get_current_active_user
 from app.db.repositories.users import UserRepository
@@ -57,3 +58,31 @@ async def update_role_of_user(
     updated_role_user = await user_repo.update_user_role(update_role_user=update_role_user)
     return updated_role_user
     
+@router.get("/")
+async def get_all_users(
+    user_repo: UserRepository= Depends(get_repository(UserRepository)),
+    current_user: UserInDB = Depends(get_current_active_user),
+) -> List[dict]:
+    if current_user.role == "GUEST" or current_user.role == "USER":
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail="Not authorized to retrieve users"
+        )
+    users = await user_repo.get_all_users()
+    if not users:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="No users found")
+    return users
+
+@router.put("/disableuser", name="users:enable_or_disable_user")
+async def enable_or_disable_user(
+    current_user: UserInDB = Depends(get_current_active_user),
+    user_repo: UserRepository = Depends(get_repository(UserRepository)),
+    user: UserDisable = Body(..., embed=True)
+) -> UserDisable:
+    if current_user.role != "ADMIN" and current_user.role != "SUPER_ADMIN":
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail="Not authorized to disable or enable users"
+        )
+    switch_disabled_user = await user_repo.switch_disabled(user_disable=user)
+    return switch_disabled_user

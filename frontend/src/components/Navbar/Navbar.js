@@ -1,5 +1,6 @@
 import React from "react"
 import { connect } from "react-redux"
+import { useToasts } from "../../hooks/ui/useToasts" 
 import { Actions as authActions } from "../../redux/auth"
 import {
   EuiAvatar,
@@ -10,46 +11,35 @@ import {
   EuiHeaderSectionItemButton,
   EuiHeaderLinks,
   EuiHeaderLink,
-  EuiGlobalToastList,
 } from "@elastic/eui"
-import { Link} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import loginIcon from "../../assets/img/loginIcon.svg"
 import styled from "styled-components"
-import { LoginPage } from ".."
+
 const LogoSection = styled(EuiHeaderLink)`
   padding: 0 2rem;
 `
 
 
 function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
-  const [toasts, setToasts] = React.useState([
-    {
-      id: "auth-loggedout-toast",
-      title: "Successfully logged out",
-      color: "warning",
-      iconType: "alert",
-      toastLifeTimeMs: 15000
-    }
-  ])
+  const navigate = useNavigate()
+  const { addToast } = useToasts()
   const handleLogout = () => {
+    addToast({
+      id: `auth-toast-loggedout`,
+      title: `Logged Out Successfully`,
+      color: "Success",
+      iconType: "alert",
+      toastLifeTimeMs: 15000,
+    })
+    navigate("/frontend/login")
     logUserOut()
-    return(
-      <>
-      <LoginPage />
-      <EuiGlobalToastList
-        toasts={toasts}
-        dismissToast={() => setToasts([])}
-        toastLifeTimeMs={15000}
-        side="right"
-        className="auth-loggedout-toast"
-      />
-      </>
-    )
   }
+  
   const loginButton = () => {
     if (user?.email && isAuthenticated) {
       return (
-        <EuiHeaderSectionItemButton onClick={() => handleLogout()}>
+        <EuiHeaderSectionItemButton onClick={() => { handleLogout();} }>
             <EuiAvatar size="l" color="#1E90FF" name="login" imageUrl={loginIcon}/>
         </EuiHeaderSectionItemButton>
       )
@@ -78,6 +68,9 @@ function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
             </EuiHeaderLink>
             <EuiHeaderLink iconType="help" href="/frontend/helppage">
               Help
+            </EuiHeaderLink>
+            <EuiHeaderLink iconType="wrench" href="/frontend/usermanagement">
+              User Management
             </EuiHeaderLink>
           </EuiHeaderLinks>
         </EuiHeaderSectionItem>

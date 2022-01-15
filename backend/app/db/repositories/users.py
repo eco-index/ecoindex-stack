@@ -1,11 +1,15 @@
 from app.db.repositories.base import BaseRepository
-from app.models.security import UserInDB, UserCreate, UserUpdateRole
+from app.models.security import UserInDB, UserCreate, UserUpdateRole, UserDisable
 from fastapi import HTTPException, status
 from pydantic import EmailStr
 from passlib.context import CryptContext
 from app.api.services import auth_service  
 from databases import Database  
-from typing import Optional
+from typing import Optional, List
+
+GET_ALL_USERS_QUERY = """
+    SELECT id, username, email, email_verified, disabled, role FROM users;
+"""
 
 GET_USER_QUERY = """
     SELECT * FROM users WHERE username = :username;
@@ -24,6 +28,15 @@ GET_USER_BY_EMAIL_QUERY = """
 UPDATE_USER_ROLE_QUERY="""
     UPDATE users SET role = :role WHERE email = :email RETURNING email, role;
 """
+
+DISABLE_USER_QUERY="""
+    UPDATE users SET disabled = True WHERE email = :email RETURNING email;
+"""
+
+ENABLE_USER_QUERY="""
+    UPDATE users SET disabled = False WHERE email = :email RETURNING email;
+"""
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password, hashed_password):
@@ -100,7 +113,26 @@ class UserRepository(BaseRepository):
             )
         updated_user = await self.db.fetch_one(query=UPDATE_USER_ROLE_QUERY, values={"email": update_role_user.email, "role": update_role_user.role})
         return updated_user
-        
+    
+    async def get_all_users(self) -> List[dict]:
+        users = await self.db.fetch_all(query=GET_ALL_USERS_QUERY)
+        if not users:
+            return None
+        return users
+
+    async def switch_disabled(self, *, user_disable: UserDisable) -> UserDisable:
+        user_record = await self.get_user_by_email(email=user_disable.email)
+        if not user_record:
+            return None
+        query = ""
+        if user_record.disabled:
+            query = ENABLE_USER_QUERY
+        else:
+            query = DISABLE_USER_QUERY
+        updated_user = await self.db.fetch_one(query=query, values={"email": user_record.email})
+        return updated_user
+            
+
         
     
     

@@ -36,6 +36,12 @@ class UserUpdateRole(CoreModel):
     email: EmailStr
     role: str
 
+class UserDisable(CoreModel):
+    """
+    For Admins to enable or disable users
+    """
+    email: EmailStr
+
 class UserPasswordUpdate(CoreModel):
     """
     Users can change their password

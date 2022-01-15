@@ -15,6 +15,18 @@ export const REQUEST_USER_SIGN_UP = "@@auth/REQUEST_USER_SIGN_UP"
 export const REQUEST_USER_SIGN_UP_SUCCESS = "@@auth/REQUEST_USER_SIGN_UP_SUCCESS"
 export const REQUEST_USER_SIGN_UP_FAILURE = "@@auth/REQUEST_USER_SIGN_UP_FAILURE"
 
+export const RETRIEVE_USERS = "@@auth/RETREIVE_USERS"
+export const RETRIEVE_USERS_SUCCESS = "@@auth/RETRIEVE_USERS_SUCCESS"
+export const RETRIEVE_USERS_FAILURE = "@@auth/RETRIEVE_USERS_FAILURE"
+
+export const UPDATE_USER_ROLE = "@@auth/UPDATE_USER_ROLE"
+export const UPDATE_USER_ROLE_SUCCESS = "@@auth/UPDATE_USER_ROLE_SUCCESS"
+export const UPDATE_USER_ROLE_FAILURE = "@@auth/UPDATE_USER_ROLE_FAILURE"
+
+export const SWITCH_USER_DISABLED = "@@auth/SWITCH_USER_DISABLED"
+export const SWITCH_USER_DISABLED_SUCCESS = "@@auth/SWITCH_USER_DISABLED_SUCCESS"
+export const SWITCH_USER_DISABLED_FAILURE = "@@auth/SWITCH_USER_DISABLED_FAILURE"
+
 export default function authReducer(state = initialState.auth, action = {}) {
   switch (action.type) {
     case REQUEST_LOGIN:
@@ -79,6 +91,58 @@ export default function authReducer(state = initialState.auth, action = {}) {
         isAuthenticated: false,
         error: action.error
       }  
+    case RETRIEVE_USERS:
+      return{
+        ...state,
+        isLoading: true
+      }
+    case RETRIEVE_USERS_SUCCESS:
+      return{
+        ...state,
+        isLoading: false,
+        error: null,
+        data: action.data
+      }
+    case RETRIEVE_USERS_FAILURE:
+      return{
+        ...state,
+        isLoading: false,
+        error: action.error
+      }
+    case UPDATE_USER_ROLE:
+      return{
+        ...state,
+        isLoading: true
+      }
+    case UPDATE_USER_ROLE_SUCCESS:
+      return{
+        ...state,
+        isLoading: false,
+        error: null
+      }
+    case UPDATE_USER_ROLE_FAILURE:
+      return{
+        ...state,
+        isLoading: false,
+        error: action.error
+      }
+    case SWITCH_USER_DISABLED:
+      return{
+        ...state,
+        isLoading: true
+      }
+    case SWITCH_USER_DISABLED_SUCCESS:
+      return{
+        ...state,
+        isLoading: false,
+        error: null
+      }
+    case SWITCH_USER_DISABLED_FAILURE:
+      return{
+        ...state,
+        isLoading: false,
+        error: action.error
+      }
     default:
       return state
   }
@@ -176,5 +240,50 @@ Actions.registerNewUser = ({ username, email, password }) => {
     )
 }
 
+Actions.retrieveUsers = () => {
+  return apiClient({
+    url: `/users/`,
+    method: `GET`,
+    types: {
+      REQUEST: RETRIEVE_USERS,
+      SUCCESS: RETRIEVE_USERS_SUCCESS,
+      FAILURE: RETRIEVE_USERS_FAILURE
+    },
+    options: {
+      data: {},
+      params: {}
+    }
+  })
+}
+Actions.updateUserRole = ({ email, role }) => {
+  return apiClient({
+    url: `/users/updaterole`,
+    method: `PUT`,
+    types: {
+      REQUEST: UPDATE_USER_ROLE,
+      SUCCESS: UPDATE_USER_ROLE_SUCCESS,
+      FAILURE: UPDATE_USER_ROLE_FAILURE
+    },
+    options: {
+      data: { update_role_user: { email, role } },
+      params: {}
+    }
+  })
+}
+Actions.switchDisableUser = ({ email }) => {
+  return apiClient({
+    url: `/users/disableuser`,
+    method: `PUT`,
+    types: {
+      REQUEST: SWITCH_USER_DISABLED,
+      SUCCESS: SWITCH_USER_DISABLED_SUCCESS,
+      FAILURE: SWITCH_USER_DISABLED_FAILURE
+    },
+    options: {
+      data: { user: { email } },
+      params: {}
+    }
+  })
+}
 
 

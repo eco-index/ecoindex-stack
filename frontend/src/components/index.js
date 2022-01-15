@@ -12,3 +12,5 @@ export { default as RetrieveDataPage } from "./RetrieveDataPage/RetrieveDataPage
 export { default as HelpPage } from "./HelpPage/HelpPage"
 export { default as ProtectedRouteLanding } from "./ProtectedRoute/ProtectedRouteLanding"
 export { default as RetrieveDataForm } from "./RetrieveDataForm/RetrieveDataForm"
+export { default as UserManagementPage } from "./UserManagementPage/UserManagementPage"
+export { default as UserManagementTable } from "./UserManagementTable/UserManagementTable"
