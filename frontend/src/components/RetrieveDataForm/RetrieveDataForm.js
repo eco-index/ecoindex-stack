@@ -101,8 +101,8 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
       location_type: form.locationType
     })
     if(res.success) {
-      const downloadID = res.data?.download_id
-      const action = await retrieveData({download_id: downloadID}) 
+    const downloadID = res.data?.download_id
+    const action = await retrieveData({download_id: downloadID}) 
       if(action.success) {
         addToast({
           id: `auth-toast-download-successful`,

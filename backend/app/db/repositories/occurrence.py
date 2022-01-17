@@ -57,34 +57,37 @@ class OccurrenceRepository(BaseRepository):
         query = GET_OCCURRENCES_BY_FILTER
         numquery = 0
         args = {}
-        if(filter.classification_level) and (filter.classification_name):
-            if(filter.classification_level in ["phylum", "kingdom", "class", "order", "family", "genus", "species"]):
-                query += "\n"
-                query += buildClassificationQueryLine(numquery)
-                args["classification_level"] = filter.classification_level
-                numquery = numquery + 1
-        if(filter.year) or ((filter.startDate) and (filter.endDate)):
-            if (filter.year):
+        if not filter.classification_level and not filter.classification_name and not filter.startDate and not filter.endDate and (not filter.year or filter.year == 0)and not filter.location_name and not filter.location_type:
+            occurrences = await self.get_all_occurrences()
+        else:
+            if(filter.classification_level) and (filter.classification_name):
+                if(filter.classification_level in ["phylum", "kingdom", "class", "order", "family", "genus", "species"]):
+                    query += "\n"
+                    query += buildClassificationQueryLine(numquery)
+                    args["classification_level"] = filter.classification_level
+                    numquery = numquery + 1
+            if(filter.year) and (filter.year != 0):
                 filter.startDate = str(filter.year) + "-01-01"
-                filter.endDate = str(filter.year) + "-12-31"
-            startDate = datetime.strptime(filter.startDate, '%Y-%m-%d')
-            endDate = datetime.strptime(filter.endDate, '%Y-%m-%d')
-            query += "\n"
-            query += buildObservationDateQueryLine(numquery)
-            args["startDate"] = startDate
-            args["endDate"] = endDate
-            numquery = numquery + 1
-        if(filter.location_name):
-            query += "\n"
-            query += buildLocationQueryLine(filter.location_name, "", numquery)
-            args["location_name"] = filter.location_name
-            numquery = numquery + 1
-        if(filter.location_type):
-            query += "\n"
-            query += buildLocationQueryLine("", filter.location_type, numquery)
-            args["location_type"] = filter.location_type
-            numquery = numquery + 1
-        occurrences = await self.db.fetch_all(query, args)
+                filter.endDate = str(filter.year) + "-12-31"              
+            if(filter.startDate) and (filter.endDate):
+                startDate = datetime.strptime(filter.startDate, '%Y-%m-%d')
+                endDate = datetime.strptime(filter.endDate, '%Y-%m-%d')
+                query += "\n"
+                query += buildObservationDateQueryLine(numquery)
+                args["startDate"] = startDate
+                args["endDate"] = endDate
+                numquery = numquery + 1
+            if(filter.location_name):
+                query += "\n"
+                query += buildLocationQueryLine(filter.location_name, "", numquery)
+                args["location_name"] = filter.location_name
+                numquery = numquery + 1
+            if(filter.location_type):
+                query += "\n"
+                query += buildLocationQueryLine("", filter.location_type, numquery)
+                args["location_type"] = filter.location_type
+                numquery = numquery + 1
+            occurrences = await self.db.fetch_all(query, args)
         i = 0
         path = "./occurrence_download/"
         while os.path.exists(path + f"file_{i}.csv"):  
