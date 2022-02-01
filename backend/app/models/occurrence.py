@@ -10,19 +10,19 @@ class OccurrenceBase(CoreModel):
     scientific_name: str
     observation_count: Optional [int] = 1
     observation_date: datetime.date
-    latitude: Optional[float] = 1.0
-    longitude: Optional[float] = 1.0
-    elevation: Optional[float] = 1.0
-    depth: Optional[float] = 1.0
+    occurrence_latitude: Optional[float] = 1.0
+    occurrence_longitude: Optional[float] = 1.0
+    occurrence_elevation: Optional[float] = 1.0
+    occurrence_depth: Optional[float] = 1.0
     taxon_rank: str
     infraspecific_epithet: Optional[str] = 'fish'
-    species: Optional[str] = 'fish'
-    genus: Optional[str] = 'fish'
-    family: Optional[str] = 'fish'
-    order: Optional[str] = 'fish'
+    occurrence_species: Optional[str] = 'fish'
+    occurrence_genus: Optional[str] = 'fish'
+    occurrence_family: Optional[str] = 'fish'
+    occurrence_order: Optional[str] = 'fish'
     occurrence_class: Optional[str] = 'fish'
-    phylum: Optional[str] = 'fish'
-    kingdom: Optional[str] = 'fish'
+    occurrence_phylum: Optional[str] = 'fish'
+    occurrence_kingdom: Optional[str] = 'fish'
 
 class OccurrenceCreate(OccurrenceBase):
     pass

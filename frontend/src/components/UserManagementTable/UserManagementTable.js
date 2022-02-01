@@ -16,9 +16,7 @@ import {
   EuiModalFooter,
   EuiSuperSelect,
 } from "@elastic/eui"
-import validation from "../../utils/validation"
 import styled from "styled-components"
-import { extractErrorMessages } from "../../utils/errors"
 
 const UserManagementTableWrapper = styled.div`
   padding: 2rem;

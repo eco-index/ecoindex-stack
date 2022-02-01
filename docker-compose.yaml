@@ -7,13 +7,15 @@ services:
       command:
         - "--accesslog"
         - "--api.insecure=true"
+        # - "--api.dashboard=true"
         - "--providers.docker=true"
         - "--entrypoints.web.address=:80"
+        # - "--entrypoints.dashboard.address=:9090"
         - "--providers.docker.exposedbydefault=false"
         - "--providers.docker.network=frontend-network"
       ports:
         - 80:80
-        - 8080:8080
+        - 9090:8080
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         # - traefik-public-certificates:/certificates
@@ -22,6 +24,14 @@ services:
         - frontend
       networks:
         - frontend-network
+      # labels:
+        # - "traefik.enable=true"
+        # - "traefik.http.routers.api.rule=Host(`traefik.localhost`)"
+        # - "traefik.http.routers.api.service=api@internal"
+        # - "traefik.http.routers.api.entrypoints=dashboard"
+        # - "traefik.http.routers.api.middlewares=auth"
+        # - "traefik.http.middlewares.auth.basicauth.users=test:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/,test2:$$apr1$$d9hr9HBB$$4HxwgUir3HP4EsggP/QNo0"
+      
 
   frontend:
       stdin_open: true

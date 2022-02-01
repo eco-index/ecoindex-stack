@@ -49,7 +49,7 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
       })
       navigate("/frontend")
     }
-  }, [user, navigate, isAuthenticated])
+  }, [user, navigate, isAuthenticated, addToast])
 
   const handleInputChange = (label, value) => {
     validateInput(label, value)

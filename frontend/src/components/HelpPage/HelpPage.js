@@ -52,7 +52,7 @@ export default function LandingPage() {
               <EuiSpacer size="s"/>
               <EuiText>
                 <p>
-                  Classification Level and name is based on the GBIF taxonomy as found <a href="https://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c" target="_blank">here</a><br />
+                  Classification Level and name is based on the GBIF taxonomy as found <a href="https://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c" target="_blank" rel="noreferrer">here</a><br />
                   Regional boundaries are based on Regional Council boundaries provided by <a href = "https://datafinder.stats.govt.nz/layer/104254-regional-council-2020-generalised">Stats NZ</a><br />
                   Iwi boundaries are as provided by <a href = "https://hub.arcgis.com/datasets/TPK::layer-iwi-areasofinterest/explore?location=-40.038265%2C-8.471169%2C6.24">Te Puna Kōkiri</a>
                 </p>
