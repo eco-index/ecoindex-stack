@@ -43,6 +43,8 @@ services:
       restart: always
       expose:
         - 3000
+      env_file:
+        - ./prodscripts/env/.env
       volumes:
         - /app/node_modules
         - ./frontend:/app

@@ -164,7 +164,7 @@ Actions.requestUserLogin = ({ email, password }) => {
       // make the actual HTTP request to our API
       const res = await axios({
         method: `POST`,
-        url: `http://localhost:80/api/v1/users/login/token/`,
+        url: process.env.REACT_APP_API_LOGIN_URL,
         data: formData,
         headers,
       })
@@ -185,27 +185,44 @@ Actions.requestUserLogin = ({ email, password }) => {
 }
 
 Actions.fetchUserFromToken = (access_token) => {
-  return async (dispatch) => {
-    dispatch({ type: FETCHING_USER_FROM_TOKEN })
-    const token = access_token ? access_token : localStorage.getItem("access_token")
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    }
-    try {
-      const res = await axios({
+  return (dispatch) =>
+    dispatch(
+      apiClient({
+        url: `/users/me`,
         method: `GET`,
-        url: `http://localhost:80/api/v1/users/me/`,
-        headers
+        types:{
+          REQUEST: FETCHING_USER_FROM_TOKEN,
+          SUCCESS: FETCHING_USER_FROM_TOKEN_SUCCESS,
+          FAILURE: FETCHING_USER_FROM_TOKEN_FAILURE
+        },
+        options:{
+          data: { access_token },
+          params: {}
+        },
       })
-      console.log(res)
-      return dispatch({ type: FETCHING_USER_FROM_TOKEN_SUCCESS, data: res.data })
-    } catch (error) {
-      console.log(error)
-      return dispatch({ type: FETCHING_USER_FROM_TOKEN_FAILURE, error })
-    }
-  }
+    )
 }
+//   return async (dispatch) => {
+//     dispatch({ type: FETCHING_USER_FROM_TOKEN })
+//     const token = access_token ? access_token : localStorage.getItem("access_token")
+//     const headers = {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`
+//     }
+//     try {
+//       const res = await axios({
+//         method: `GET`,
+//         url: `http://localhost:80/api/v1/users/me/`,
+//         headers
+//       })
+//       console.log(res)
+//       return dispatch({ type: FETCHING_USER_FROM_TOKEN_SUCCESS, data: res.data })
+//     } catch (error) {
+//       console.log(error)
+//       return dispatch({ type: FETCHING_USER_FROM_TOKEN_FAILURE, error })
+//     }
+//   }
+// }
 
 Actions.logUserOut = () => {
   localStorage.removeItem("access_token")

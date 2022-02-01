@@ -32,18 +32,21 @@ services:
       restart: always
       expose:
         - 3000
+      env_file:
+          - ../prodscripts/env/.env
       volumes:
         - /app/node_modules
-        - ./frontend:/app
+        - /frontend:/app
       networks:
         - frontend-network
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/frontend`)"
+        - "traefik.http.routers.frontend.rule=Host(`ecoindex-01.sci.waikato.ac.nz`) && PathPrefix(`/frontend`)"
         - "traefik.http.routers.frontend.entrypoints=web"
+        - "traefik.docker.network=frontend-network"
         
     api:
-        image: konnyb/ecoindex-stack:web
+        image: ecoindex/ecoindex-backend:1.0.0
         restart: always
         volumes:
           - ../prodscripts/migrations:/backend/migrations
@@ -61,10 +64,11 @@ services:
           - frontend-network
         labels:
           - "traefik.enable=true"
-          - "traefik.http.routers.backend.rule=Host(`localhost`) && PathPrefix(`/api/v1`)"
+          - "traefik.http.routers.backend.rule=Host(`ecoindex-01.sci.waikato.ac.nz`) && PathPrefix(`/api/v1`)"
           - "traefik.http.routers.backend.entrypoints=web"
           - "traefik.http.middlewares.api-stripprefix.stripPrefix.prefixes=/api/v1"
           - "traefik.http.routers.backend.middlewares=api-stripprefix"
+          - "traefik.docker.network=frontend-network"
         
     db:
         image: postgis/postgis
@@ -74,7 +78,7 @@ services:
         ports:
           - 5432:5432
         env_file:
-          - ./prodscripts/env/.env
+          - ../prodscripts/env/.env
         networks:
           - frontend-network
       

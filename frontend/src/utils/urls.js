@@ -38,7 +38,7 @@
     const baseUrl =
       process.env.NODE_ENV === "production"
         ? process.env.REMOVE_SERVER_URL
-        : "http://localhost:80/api/v1"
+        : process.env.REACT_APP_API_SERVER_URL
     const fullURL = `${baseUrl}${endpointPath}`
     return formatURLWithQueryParams(fullURL, params)
   }
