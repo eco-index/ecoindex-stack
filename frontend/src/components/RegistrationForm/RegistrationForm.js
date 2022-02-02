@@ -24,7 +24,6 @@ const NeedAccountLink = styled.span`
 `
 function RegistrationForm({ authError, user, isLoading, isAuthenticated, registerUser }) {
   const [form, setForm] = React.useState({
-    username: "",
     email: "",
     password: "",
     passwordConfirm: ""
@@ -81,7 +80,6 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
     }
     setHasSubmitted(true)
     const action = await registerUser({
-      username: form.username,
       email: form.email,
       password: form.password
     })
@@ -121,21 +119,6 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
             onChange={(e) => handleInputChange("email", e.target.value)}
             aria-label="Enter the email associated with your account."
             isInvalid={Boolean(errors.email)}
-          />
-        </EuiFormRow>
-        <EuiFormRow
-          label="Username"
-          helpText="Choose a username consisting solely of letters, numbers, underscores, and dashes."
-          isInvalid={Boolean(errors.username)}
-          error={`Please enter a valid username.`}
-        >
-          <EuiFieldText
-            icon="user"
-            placeholder="your_username"
-            value={form.username}
-            onChange={(e) => handleInputChange("username", e.target.value)}
-            aria-label="Choose a username consisting of letters, numbers, underscores, and dashes."
-            isInvalid={Boolean(errors.username)}
           />
         </EuiFormRow>
         <EuiFormRow

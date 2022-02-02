@@ -44,7 +44,8 @@ export default function LandingPage() {
             <EuiText>
               <p>
                 Accounts can be created <a href="/frontend/registration">here</a><br />
-                Please note that accounts will need to be approved before data retrieval is possible.
+                Please note that accounts will need to be approved before data retrieval is possible.<br />
+                To request approval, please send an email to konnyb@waikato.ac.nz 
               </p>
             </EuiText>
             <EuiSpacer size="l"/>

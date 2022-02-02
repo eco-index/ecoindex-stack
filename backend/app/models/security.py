@@ -8,25 +8,22 @@ from datetime import datetime, timedelta
 
 class User(CoreModel):
     email: Optional[EmailStr]
-    username: Optional[str]
     email_verified: bool = False
     disabled: bool = False
     role: str = "GUEST"
 
 class UserCreate(CoreModel):
     """
-    Email, username, and password are required for registering a new user
+    Email, and password are required for registering a new user
     """
     email: EmailStr
     password: constr(min_length=7, max_length=100)
-    username: constr(min_length=3, regex="^[a-zA-Z0-9_-]+$")
 
 class UserUpdate(CoreModel):
     """
-    Users are allowed to update their email and/or username
+    Users are allowed to update their email
     """
     email: Optional[EmailStr]
-    username: Optional[constr(min_length=3, regex="^[a-zA-Z0-9_-]+$")]
 
 class UserUpdateRole(CoreModel):
     """
@@ -71,11 +68,10 @@ class JWTCreds(CoreModel):
     How we'll identify users
     """
     sub: EmailStr
-    username: str
 
 class JWTPayload(JWTMeta, JWTCreds):
     """
-    JWT Payload right before it's encoded - combine meta and username
+    JWT Payload right before it's encoded - combine meta and email
     """
     pass
 

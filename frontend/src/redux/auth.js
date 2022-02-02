@@ -231,7 +231,7 @@ Actions.logUserOut = () => {
   }
 }
 
-Actions.registerNewUser = ({ username, email, password }) => {
+Actions.registerNewUser = ({ email, password }) => {
   return (dispatch) =>
     dispatch(
       apiClient({
@@ -243,7 +243,7 @@ Actions.registerNewUser = ({ username, email, password }) => {
           FAILURE: REQUEST_USER_SIGN_UP_FAILURE
         },
         options: {
-          data: { new_user: { username, email, password } },
+          data: { new_user: { email, password } },
           params: {}
         },
         onSuccess: (res) => {

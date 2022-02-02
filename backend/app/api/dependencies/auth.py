@@ -15,8 +15,8 @@ async def get_user_from_token(
     user_repo: UserRepository = Depends(get_repository(UserRepository)),
 ) -> Optional[UserInDB]:
     try:
-        username = auth_service.get_username_from_token(token=token, secret_key=str(SECRET_KEY))
-        user = await user_repo.get_user(username=username)
+        email = auth_service.get_email_from_token(token=token, secret_key=str(SECRET_KEY))
+        user = await user_repo.get_user_by_email(email=email)
     except Exception as e:
         raise e
     return user

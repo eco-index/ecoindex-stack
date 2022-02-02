@@ -46,7 +46,7 @@ class AuthService:
             iat=datetime.timestamp(datetime.utcnow()),
             exp=datetime.timestamp(datetime.utcnow() + timedelta(minutes=expires_in)),
         )
-        jwt_creds = JWTCreds(sub=user.email, username=user.username)
+        jwt_creds = JWTCreds(sub=user.email)
         token_payload = JWTPayload(
             **jwt_meta.dict(),
             **jwt_creds.dict(),
@@ -54,7 +54,7 @@ class AuthService:
         access_token = jwt.encode(token_payload.dict(), secret_key, algorithm=ALGORITHM)
         return access_token
     
-    def get_username_from_token(self, *, token: str, secret_key: str) -> Optional[str]:
+    def get_email_from_token(self, *, token: str, secret_key: str) -> Optional[str]:
         try:
             decoded_token = jwt.decode(token, str(secret_key), audience=JWT_AUDIENCE, algorithms=[ALGORITHM])
             payload = JWTPayload(**decoded_token)
@@ -64,5 +64,5 @@ class AuthService:
                 detail="Could not validate token credentials.",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        return payload.username
+        return payload.sub
 

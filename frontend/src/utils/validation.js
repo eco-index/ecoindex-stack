@@ -17,13 +17,10 @@
   export function validatePassword(password, length = 7) {
     return password?.length >= length
   }
-  export function validateUsername(username) {  
-    return /^[a-zA-Z0-9_-]+$/.test(username) 
-  } 
+
   const validationState = {
     email: validateEmail,
     password: validatePassword,
-    username: validateUsername 
   };
   export default validationState;
   

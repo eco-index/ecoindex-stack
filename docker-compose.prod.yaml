@@ -49,7 +49,7 @@ services:
         image: ecoindex/ecoindex-backend:1.0.0
         restart: always
         volumes:
-          - ../prodscripts/migrations:/backend/migrations
+          - ../prodscripts/alembic/migrations:/backend/migrations
           - ../prodscripts/occurrence_download:/backend/occurrence_download
         environment:
           - PORT=8000

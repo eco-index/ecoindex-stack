@@ -35,7 +35,7 @@ function UserManagementTable({ authError, isLoading, data, retrieveUsers, update
 
     const [pageIndex, setPageIndex] = useState(0)
     const [pageSize, setPageSize] = useState(5)
-    const [sortField, setSortField] = useState('username')
+    const [sortField, setSortField] = useState('email')
     const [sortDirection, setSortDirection] = useState('asc')
     const [selectedItems, setSelectedItems] = useState([])
     const [users, setUsers] = useState ([])
@@ -249,14 +249,6 @@ function UserManagementTable({ authError, isLoading, data, retrieveUsers, update
         field: 'email',
         name: 'Email',
         sortable: true,
-        truncateText: true,
-        mobileOptions: {
-          show: false,
-        },
-      },
-      {
-        field: 'username',
-        name: 'Username',
         truncateText: true,
         mobileOptions: {
           show: false,

@@ -122,12 +122,17 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
         //redirect
       }
       else{
-        setErrors((errors) => ({ ...errors, form: "Submission failed, please check input fields"}))
+          setErrors((errors) => ({ ...errors, form: "Submission failed, please check input fields"}))
         return
       }
     }
     else{
-      setErrors((errors) => ({ ...errors, form: "Submission failed, please check input fields"}))
+      if(res.error.status === 401){
+        setErrors((errors) => ({ ...errors, form: "Not authorised to retrieve occurrences.  Please see FAQ"}))
+      }
+      else{
+        setErrors((errors) => ({ ...errors, form: res.error.status}))
+      }
       return
     }
   }

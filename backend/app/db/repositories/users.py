@@ -8,17 +8,17 @@ from databases import Database
 from typing import Optional, List
 
 GET_ALL_USERS_QUERY = """
-    SELECT id, username, email, email_verified, disabled, role FROM users;
+    SELECT id, email, email_verified, disabled, role FROM users;
 """
 
-GET_USER_QUERY = """
-    SELECT * FROM users WHERE username = :username;
-"""
+# GET_USER_QUERY = """
+#     SELECT * FROM users WHERE username = :username;
+# """
 
 REGISTER_NEW_USER_QUERY = """
-    INSERT INTO users (username, email, password, salt)
-    VALUES (:username, :email, :password, :salt)
-    RETURNING id, username, email, email_verified, password, salt, disabled, role;
+    INSERT INTO users (email, password, salt)
+    VALUES (:email, :password, :salt)
+    RETURNING id, email, email_verified, password, salt, disabled, role;
 """
 
 GET_USER_BY_EMAIL_QUERY = """
@@ -52,20 +52,14 @@ class UserRepository(BaseRepository):
     def __init__(self, db: Database) -> None:
         super().__init__(db)
         self.auth_service = auth_service
-
-    async def get_user(self, *, username:str) -> UserInDB:    
-        user = await self.db.fetch_one(query=GET_USER_QUERY, values={"username": username})
-        if not user:
-            return None
-        return UserInDB(**user)
     
-    def authenticate_user(self, username: str, password: str):
-        user = self.get_user(username)
-        if not user:
-            return False
-        if not verify_password(password, user.hashed_password):
-            return False
-        return user
+    # def authenticate_user(self, email: EmailStr, password: str):
+    #     user = self.get_user_by_email(email)
+    #     if not user:
+    #         return False
+    #     if not verify_password(password, user.hashed_password):
+    #         return False
+    #     return user
     
     async def register_new_user(self, *, new_user: UserCreate) -> UserInDB:
          # make sure email isn't already taken
@@ -73,12 +67,6 @@ class UserRepository(BaseRepository):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="That email is already taken. Login with that email or register with another one."
-            )
-        # make sure username isn't already taken
-        if await self.get_user(username=new_user.username):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="That username is already taken. Please try another one."                
             )
         user_password_update = self.auth_service.create_salt_and_hashed_password(plaintext_password=new_user.password)
         new_user_params = new_user.copy(update=user_password_update.dict())

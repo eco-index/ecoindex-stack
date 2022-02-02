@@ -1,6 +1,5 @@
 export const errorFieldToMessageMapping = {
     email: "Please enter a valid email.",
-    username: "Please enter a username consisting of only letters, numbers, underscores, and dashes.",
     password: "Please choose a password with at least 7 characters."
   }
   export const parseErrorDetail = (errorDetail) => {
