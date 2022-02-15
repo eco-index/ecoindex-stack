@@ -27,6 +27,14 @@ export const SWITCH_USER_DISABLED = "@@auth/SWITCH_USER_DISABLED"
 export const SWITCH_USER_DISABLED_SUCCESS = "@@auth/SWITCH_USER_DISABLED_SUCCESS"
 export const SWITCH_USER_DISABLED_FAILURE = "@@auth/SWITCH_USER_DISABLED_FAILURE"
 
+export const UPDATE_PASSWORD = "@@auth/UPDATE_PASSWORD"
+export const UPDATE_PASSWORD_SUCCESS = "@@auth/UPDATE_PASSWORD_SUCCESS"
+export const UPDATE_PASSWORD_FAILURE = "@@auth/UPDATE_PASSWORD_FAILURE"
+
+export const RESET_PASSWORD_REQUEST = "@@auth/RESET_PASSWORD_REQUEST"
+export const RESET_PASSWORD_SUCCESS = "@@auth/RESET_PASSWORD_SUCCESS"
+export const RESET_PASSWORD_FAILURE = "@@auth/RESET_PASSWORD_FAILURE"
+
 export default function authReducer(state = initialState.auth, action = {}) {
   switch (action.type) {
     case REQUEST_LOGIN:
@@ -138,6 +146,40 @@ export default function authReducer(state = initialState.auth, action = {}) {
         error: null
       }
     case SWITCH_USER_DISABLED_FAILURE:
+      return{
+        ...state,
+        isLoading: false,
+        error: action.error
+      }
+    case UPDATE_PASSWORD:
+      return{
+        ...state,
+        isLoading: true,
+      }
+    case UPDATE_PASSWORD_SUCCESS:
+      return{
+        ...state,
+        isLoading: false,
+        error: null
+      }
+    case UPDATE_PASSWORD_FAILURE:
+      return{
+        ...state,
+        isLoading: false,
+        error: action.error
+      }
+    case RESET_PASSWORD_REQUEST:
+      return{
+        ...state,
+        isLoading: true
+      }
+    case RESET_PASSWORD_SUCCESS:
+      return{
+        ...state,
+        isLoading: false,
+        error: null
+      }
+    case RESET_PASSWORD_FAILURE:
       return{
         ...state,
         isLoading: false,
@@ -302,5 +344,34 @@ Actions.switchDisableUser = ({ email }) => {
     }
   })
 }
-
+Actions.updateUserPassword = ({ reset_token, password }) => {
+  return apiClient({
+    url: `/users/resetpassword`,
+    method: `PUT`,
+    types: {
+      REQUEST: UPDATE_PASSWORD,
+      SUCCESS: UPDATE_PASSWORD_SUCCESS,
+      FAILURE: UPDATE_PASSWORD_FAILURE
+    },
+    options: {
+      data: { user_reset_password: { reset_token, password } },
+      params: {}
+    }
+  })
+}
+Actions.resetPasswordRequest = ({ email }) => {
+  return apiClient({
+    url: `/users/forgotpassword`,
+    method: `PUT`,
+    types: {
+      REQUEST: RESET_PASSWORD_REQUEST,
+      SUCCESS: RESET_PASSWORD_SUCCESS,
+      FAILURE: RESET_PASSWORD_FAILURE
+    },
+    options: {
+      data: { user: { email } },
+      params: {}
+    }
+  })
+}
 

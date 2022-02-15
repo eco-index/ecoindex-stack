@@ -1,5 +1,5 @@
 from app.db.repositories.base import BaseRepository
-from app.models.security import UserInDB, UserCreate, UserUpdateRole, UserDisable
+from app.models.security import UserInDB, UserCreate, UserUpdateRole, UserDisable, UserResetPassword
 from fastapi import HTTPException, status
 from pydantic import EmailStr
 from passlib.context import CryptContext
@@ -35,6 +35,10 @@ DISABLE_USER_QUERY="""
 
 ENABLE_USER_QUERY="""
     UPDATE users SET disabled = False WHERE email = :email RETURNING email;
+"""
+
+UPDATE_PASSWORD_QUERY="""
+    UPDATE users SET password = :password, salt = :salt WHERE email = :email RETURNING email;
 """
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -102,6 +106,20 @@ class UserRepository(BaseRepository):
         updated_user = await self.db.fetch_one(query=UPDATE_USER_ROLE_QUERY, values={"email": update_role_user.email, "role": update_role_user.role})
         return updated_user
     
+    async def update_user_password(self, *, user: UserResetPassword) -> UserInDB:
+        email = self.auth_service.get_email_from_reset_token(token=user.reset_token)
+        if not await self.get_user_by_email(email=email):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User does not exist"
+            )
+        user_update = UserCreate(email=email, password=user.password)
+        user_password_update = self.auth_service.create_salt_and_hashed_password(plaintext_password=user.password)
+        new_user_params = user_update.copy(update=user_password_update.dict())
+        updated_user = await self.db.fetch_one(query=UPDATE_PASSWORD_QUERY, values=new_user_params.dict())
+        return updated_user
+
+
     async def get_all_users(self) -> List[dict]:
         users = await self.db.fetch_all(query=GET_ALL_USERS_QUERY)
         if not users:

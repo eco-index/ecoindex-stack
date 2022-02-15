@@ -1,55 +1,43 @@
 import React from "react"
 import { connect } from "react-redux"
+import { Actions as authActions} from "../../redux/auth"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { useToasts } from "../../hooks/ui/useToasts" 
-import { Actions as authActions } from "../../redux/auth"
-import { useNavigate } from "react-router-dom"
 import {
   EuiButton,
-  EuiCheckbox,
-  EuiFieldText,
   EuiForm,
   EuiFormRow,
   EuiFieldPassword,
   EuiSpacer
 } from "@elastic/eui"
-import { Link } from "react-router-dom"
 import validation from "../../utils/validation"
-import { htmlIdGenerator } from "@elastic/eui/lib/services"
 import styled from "styled-components"
 import { extractErrorMessages } from "../../utils/errors"
-const RegistrationFormWrapper = styled.div`
+const ResetPasswordFormWrapper = styled.div`
   padding: 2rem;
 `
-const NeedAccountLink = styled.span`
-  font-size: 0.8rem;
-`
-function RegistrationForm({ authError, user, isLoading, isAuthenticated, registerUser }) {
+
+function ResetPasswordForm({ authError, isLoading, updateUserPassword }) {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [token, setToken] = React.useState(
+      searchParams.get("token")
+  )
   const [form, setForm] = React.useState({
-    email: "",
     password: "",
     passwordConfirm: ""
   })
-  const [agreedToTerms, setAgreedToTerms] = React.useState(false)
   const [errors, setErrors] = React.useState({})
   const [hasSubmitted, setHasSubmitted] = React.useState(false) 
   const { addToast } = useToasts()
   const navigate = useNavigate()
   const authErrorList = extractErrorMessages(authError) 
   // if the user is already authenticated, redirect them to the landing page
-  React.useEffect(() => {
-    if (user?.email && isAuthenticated) {
-      navigate("/frontend")
-    }
-  }, [user, navigate, isAuthenticated])
   const validateInput = (label, value) => {
     // grab validation function and run it on input if it exists
     // if it doesn't exists, just assume the input is valid
     const isValid = validation?.[label] ? validation?.[label]?.(value) : true
     // set an error if the validation function did NOT return true
     setErrors((errors) => ({ ...errors, [label]: !isValid }))
-  }
-  const setAgreedToTermsCheckbox = (e) => {
-    setAgreedToTerms(e.target.checked)
   }
   const handleInputChange = (label, value) => {
     validateInput(label, value)
@@ -67,6 +55,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
     // validate inputs before submitting
     Object.keys(form).forEach((label) => validateInput(label, form[label]))
     // if any input hasn't been entered in, return early
+    
     if (!Object.values(form).every((value) => Boolean(value))) {
       setErrors((errors) => ({ ...errors, form: `You must fill out all fields.` }))
       return
@@ -76,30 +65,27 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
       setErrors((errors) => ({ ...errors, form: `Passwords do not match.` }))
       return
     }
-    if (!agreedToTerms) {
-      setErrors((errors) => ({ ...errors, form: `You must agree to the terms and conditions.` }))
-      return
-    }
     setHasSubmitted(true)
-    const action = await registerUser({
-      email: form.email,
+    const action = await updateUserPassword({
+      reset_token: token,
       password: form.password
     })
     if(action.success){
-      addToast({
-          id: `auth-toast-registration-successful`,
-          title: "Registered Successfully",
-          color: "success",
-          iconType: "alert",
-          toastLifeTimeMs: 15000,
-        })
-        navigate("/frontend")
+        addToast({
+            id: `auth-toast-update-password-successful`,
+            title: "Password Update Successful",
+            color: "success",
+            iconType: "alert",
+            toastLifeTimeMs: 15000,
+          })
+          navigate("/frontend/login")
     }
     else{
       setErrors((errors) => ({ ...errors, form: "Update password failed, please check input fields"}))
       setForm((form) => ({ ...form, password: "", passwordConfirm: "" }))
       return
     }
+
   }
   const getFormErrors = () => {
     const formErrors = []
@@ -113,28 +99,13 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
   }
 
   return (
-    <RegistrationFormWrapper>
+    <ResetPasswordFormWrapper>
       <EuiForm
         component="form"
         onSubmit={handleSubmit}
         isInvalid={Boolean(getFormErrors().length)}
         error={getFormErrors()}
       >
-        <EuiFormRow
-          label="Email"
-          helpText="Enter the email associated with your account."
-          isInvalid={Boolean(errors.email)}
-          error={`Please enter a valid email.`}
-        >
-          <EuiFieldText
-            icon="email"
-            placeholder="user@gmail.com"
-            value={form.email}
-            onChange={(e) => handleInputChange("email", e.target.value)}
-            aria-label="Enter the email associated with your account."
-            isInvalid={Boolean(errors.email)}
-          />
-        </EuiFormRow>
         <EuiFormRow
           label="Password"
           helpText="Enter your password."
@@ -166,22 +137,11 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
           />
         </EuiFormRow>
         <EuiSpacer />
-        <EuiCheckbox
-          id={htmlIdGenerator()()}
-          label="I agree to the terms and conditions."
-          checked={agreedToTerms}
-          onChange={(e) => setAgreedToTermsCheckbox(e)}
-        />
-        <EuiSpacer />
         <EuiButton type="submit" isLoading={isLoading} fill>
-          Sign Up
+          Update Password
         </EuiButton>
       </EuiForm>
-      <EuiSpacer size="xl" />
-      <NeedAccountLink>
-        Already have an account? Log in <Link to="/frontend/login">here</Link>.
-      </NeedAccountLink>
-    </RegistrationFormWrapper>
+    </ResetPasswordFormWrapper>
   )
 }
 
@@ -189,10 +149,9 @@ export default connect(
   (state) => ({
     authError: state.auth.error,
     isLoading: state.auth.isLoading,
-    isAuthenticated: state.auth.isAuthenticated,
     user: state.auth.user
   }),
   {
-    registerUser: authActions.registerNewUser
+    updateUserPassword: authActions.updateUserPassword
   }
-)(RegistrationForm)
+)(ResetPasswordForm)

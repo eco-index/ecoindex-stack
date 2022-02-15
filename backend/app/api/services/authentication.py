@@ -6,7 +6,7 @@ from pydantic import ValidationError
 from datetime import datetime, timedelta  
 from passlib.context import CryptContext
 
-from app.core.config import SECRET_KEY, ALGORITHM, JWT_AUDIENCE, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.core.config import SECRET_KEY, ALGORITHM, JWT_AUDIENCE, JWT_AUDIENCE_RESET, ACCESS_TOKEN_EXPIRE_MINUTES, RESET_TOKEN_EXPIRE_MINUTES
 from app.models.security import UserPasswordUpdate, UserInDB, JWTMeta, JWTCreds, JWTPayload
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -66,3 +66,37 @@ class AuthService:
             )
         return payload.sub
 
+    def create_reset_token(
+        self,
+        *,
+        user: UserInDB,
+        secret_key: str = str(SECRET_KEY),
+        audience: str = JWT_AUDIENCE_RESET,
+        expires_in: int = RESET_TOKEN_EXPIRE_MINUTES,
+    ) -> str:
+        if not user or not isinstance(user, UserInDB):
+            return None
+        jwt_meta = JWTMeta(
+            aud=audience,
+            iat=datetime.timestamp(datetime.utcnow()),
+            exp=datetime.timestamp(datetime.utcnow() + timedelta(minutes=expires_in)),
+        )
+        jwt_creds = JWTCreds(sub=user.email)
+        token_payload = JWTPayload(
+            **jwt_meta.dict(),
+            **jwt_creds.dict(),
+        )
+        reset_token = jwt.encode(token_payload.dict(), secret_key, algorithm=ALGORITHM)
+        return reset_token
+
+    def get_email_from_reset_token(self, *, token: str, secret_key: str = str(SECRET_KEY)) -> Optional[str]:
+        try:
+            decoded_token = jwt.decode(token, str(secret_key), audience=JWT_AUDIENCE_RESET, algorithms=[ALGORITHM])
+            payload = JWTPayload(**decoded_token)
+        except (jwt.PyJWTError, ValidationError):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate token credentials.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return payload.sub

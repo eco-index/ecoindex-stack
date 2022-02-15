@@ -129,6 +129,10 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
       <NeedAccountLink>
         Need an account? Sign up <Link to="/frontend/registration">here</Link>.
       </NeedAccountLink>
+      <EuiSpacer size="s" />
+      <NeedAccountLink>
+        Forgot your password?  Follow this <Link to ="/frontend/forgotpassword">link</Link>.
+      </NeedAccountLink>
     </LoginFormWrapper>
   )
 }

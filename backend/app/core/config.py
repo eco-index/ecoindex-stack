@@ -21,8 +21,23 @@ ACCESS_TOKEN_EXPIRE_MINUTES=config(
     cast=int,
     default=7 * 24 * 60  # one week
 )
+RESET_TOKEN_EXPIRE_MINUTES=config(
+  "RESET_TOKEN_EXPIRE_MINUTES",
+  cast = int,
+  default = 24 * 60 # one day
+)
+JWT_AUDIENCE_RESET = config("JWT_AUDIENCE_RESET", cast=str, default="ecoindex:reset")
 JWT_AUDIENCE = config("JWT_AUDIENCE", cast=str, default="ecoindex:auth")
 JWT_TOKEN_PREFIX = config("JWT_TOKEN_PREFIX", cast=str, default="Bearer")
+
+PASSWORD_URL = config("PASSWORD_URL", cast=str)
+
+MAIL_USERNAME = config('MAIL_USERNAME', cast=str)
+MAIL_PASSWORD = config('MAIL_PASSWORD', cast=str)
+MAIL_FROM = config('MAIL_FROM', cast=str)
+MAIL_PORT = config('MAIL_PORT', cast=str)
+MAIL_SERVER = config('MAIL_SERVER', cast=str)
+MAIL_FROM_NAME = config('MAIL_FROM_NAME', cast=str)
 
 DATABASE_URL = config(
   "DATABASE_URL",

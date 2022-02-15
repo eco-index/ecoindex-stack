@@ -5,9 +5,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from starlette.status import HTTP_201_CREATED, HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND
 from typing import List
 
-from app.api.services import auth_service
+from app.api.services import auth_service, email_service
+from app.core.config import PASSWORD_URL
 
-from app.models.security import User, UserCreate, AccessToken, UserPublic, UserInDB, UserUpdateRole, UserDisable
+from app.models.security import User, UserCreate, UserUpdate, AccessToken, UserPublic, UserInDB, UserUpdateRole, UserDisable, UserResetPassword
+from app.models.email import EmailSchema
 from app.api.dependencies.database import get_repository
 from app.api.dependencies.auth import get_current_active_user
 from app.db.repositories.users import UserRepository
@@ -86,3 +88,45 @@ async def enable_or_disable_user(
         )
     switch_disabled_user = await user_repo.switch_disabled(user_disable=user)
     return switch_disabled_user
+
+@router.put("/forgotpassword", name="users:forgot_password")
+async def forgot_password(
+    user_repo: UserRepository = Depends(get_repository(UserRepository)),
+    user: UserUpdate = Body(..., embed=True)
+) -> UserUpdate:
+    current_user = await user_repo.get_user_by_email(email=user.email)
+    if not current_user:
+        raise HTTPException(
+            status_code = HTTP_404_NOT_FOUND,
+            detail="No user found"
+        )
+    reset_token = auth_service.create_reset_token(user=current_user)
+    link = PASSWORD_URL+reset_token
+    params = {
+            'title': 'Eco-index Password Reset',
+            'greeting': 'Greetings!',
+            'content': 'A request has been received to change the password for your account for the <b>Eco-index Datastore.</b> <br><br>If you did not initiate this request, please contact us immediately at <i>ecoindex‑dev@gmail.com</i> <br><br>The link to reset your password is as below: </p>',
+            'link': link,
+            'linktitle': 'Reset Password'
+        }
+    title = 'Reset Password Eco-index'
+    emails = { user.email }
+    email = EmailSchema(subject = title, email = emails, body = params)
+    res = await email_service.send_email_async(email)
+    if(res):
+        return user
+    else:
+        raise HTTPException(
+            status_code = HTTP_404_NOT_FOUND,
+            detail="Email could not be sent"
+        )
+
+
+@router.put("/resetpassword", name= "users:reset_password")
+async def reset_password(   
+    user_repo: UserRepository = Depends(get_repository(UserRepository)),
+    user_reset_password: UserResetPassword =  Body(..., embed=True)
+) -> UserPublic:
+    user = await user_repo.update_user_password(user=user_reset_password)
+    return user
+

@@ -46,6 +46,14 @@ class UserPasswordUpdate(CoreModel):
     password: constr(min_length=7, max_length=100)
     salt: str
 
+class UserResetPassword(CoreModel):
+    """
+    Users to reset password
+    """
+    reset_token: str
+    password: constr(min_length=7, max_length=100)
+
+
 class UserInDB(IDModelMixin, DateTimeModelMixin, User):
     password: str
     salt: str

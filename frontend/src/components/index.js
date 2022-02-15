@@ -14,3 +14,7 @@ export { default as ProtectedRouteLanding } from "./ProtectedRoute/ProtectedRout
 export { default as RetrieveDataForm } from "./RetrieveDataForm/RetrieveDataForm"
 export { default as UserManagementPage } from "./UserManagementPage/UserManagementPage"
 export { default as UserManagementTable } from "./UserManagementTable/UserManagementTable"
+export { default as ResetPasswordForm } from "./ResetPasswordForm/ResetPasswordForm"
+export { default as ResetPasswordPage } from "./ResetPasswordPage/ResetPasswordPage"
+export { default as ForgotPasswordForm } from "./ForgotPasswordForm/ForgotPasswordForm"
+export { default as ForgotPasswordPage } from "./ForgotPasswordPage/ForgotPasswordPage"

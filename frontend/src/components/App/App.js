@@ -1,6 +1,7 @@
 import React from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import {
+  ForgotPasswordPage,
   HelpPage,
   LandingPage,
   Layout,
@@ -9,6 +10,7 @@ import {
   ProtectedRoute,  
   ProtectedRouteLanding,
   RegistrationPage,
+  ResetPasswordPage,
   RetrieveDataPage,
   UserManagementPage
 } from "../../components"
@@ -24,6 +26,8 @@ export default function App() {
           <Route path="/frontend/retrievedata" element={<ProtectedRoute component ={RetrieveDataPage}/>} />
           <Route path="/frontend/helppage" element={<HelpPage/>} />
           <Route path="/frontend/usermanagement" element={<ProtectedRoute component = {UserManagementPage}/>} />
+          <Route path="/frontend/resetpassword" element = {<ResetPasswordPage/>} />
+          <Route path="/frontend/forgotpassword" element = {<ForgotPasswordPage/>} />
         </Routes>
       </Layout>
     </BrowserRouter>
