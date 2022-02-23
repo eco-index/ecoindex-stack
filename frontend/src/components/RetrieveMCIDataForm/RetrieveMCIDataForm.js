@@ -2,7 +2,7 @@ import React from "react"
 import moment from "moment"
 import { connect } from "react-redux"
 import { useToasts } from "../../hooks/ui/useToasts" 
-import { Actions as occurrenceActions } from "../../redux/occurrence"
+import { Actions as mciActions } from "../../redux/mci"
 import {
   EuiButton,
   EuiFieldText,
@@ -20,19 +20,24 @@ import { extractErrorMessages } from "../../utils/errors"
 const RetrieveDataFormWrapper = styled.div`
   padding: 2rem;
 `
-function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveData, data}) {
+function RetrieveDataForm({ mciError, isLoading, requestData, retrieveData}) {
   const [form, setForm] = React.useState({
-    classificationLevel: "",
-    classificationName: "",
+    // classificationLevel: "",
+    // classificationName: "",
+    indicator: "",
+    startValue: "",
+    endValue: "",
     year: "",
     startDate: "",
     endDate: "",
     locationType: "",
-    locationName: ""
+    locationName: "",
+    riverCatchment: "",
+    landcoverType: ""
   })
   const [errors, setErrors] = React.useState({})
   const [hasSubmitted, setHasSubmitted] = React.useState(false) 
-  const occurrenceErrorList = extractErrorMessages(occurrenceError) 
+  const mciErrorList = extractErrorMessages(mciError) 
   const { addToast } = useToasts()
   
   const validateInput = (label, value) => {
@@ -55,14 +60,30 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
     Object.keys(form).forEach((label) => validateInput(label, form[label]))
 
     //if classificationName is selected but not a classification level
-    if(form.classificationName && !form.classificationLevel){
-      setErrors((errors) => ({ ...errors, form: `Please select a classification level.` }))
+    // if(form.classificationName && !form.classificationLevel){
+    //   setErrors((errors) => ({ ...errors, form: `Please select a classification level.` }))
+    //   return
+    // }
+    // //if classification level is selected but no classification name
+    // if(form.classificationLevel && !form.classificationName){
+    //   form.classificationLevel = ""
+    //   setErrors((errors) => ({ ...errors, form: `Please specify a classification name` }))
+    //   return
+    // }
+    if(form.startValue && form.endValue && !form.indicator){
+      setErrors((errors) => ({ ...errors, form: `Please select an indicator type` }))
       return
     }
-    //if classification level is selected but no classification name
-    if(form.classificationLevel && !form.classificationName){
-      form.classificationLevel = ""
-      setErrors((errors) => ({ ...errors, form: `Please specify a classification name` }))
+    if(form.startValue && !form.endValue){
+      setErrors((errors) => ({ ...errors, form: `Please enter an end value` }))
+      return
+    }
+    if(!form.startValue && form.endValue){
+      setErrors((errors) => ({ ...errors, form: `Please enter a start value` }))
+      return
+    }
+    if(form.endValue < form.startValue){
+      setErrors((errors) => ({ ...errors, form: `Please enter a start value lower than the end value` }))
       return
     }
     if(!form.year){
@@ -85,6 +106,14 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
     if(form.year){
       year = form.year
     }
+    var startValue = null
+    var endValue = null
+    if(form.startValue){
+      startValue = form.startValue
+    }
+    if(form.endValue){
+      endValue = form.endValue
+    }
     var startDate = ""
     var endDate = ""
     if(form.startDate && form.endDate){
@@ -92,13 +121,18 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
       endDate = moment(form.endDate).format('YYYY-MM-DD')
     }
     const res = await requestData({
-      classification_level: form.classificationLevel,
-      classification_name: form.classificationName,
+      // classification_level: form.classificationLevel,
+      // classification_name: form.classificationName,
+      startValue: startValue,
+      endValue: endValue,
+      indicator: form.indicator,
       year: year,
       startDate: startDate,
       endDate: endDate,
       location_name: form.locationName,
-      location_type: form.locationType
+      location_type: form.locationType,
+      river_catchment: form.riverCatchment,
+      landcover_type: form.landcoverType
     })
     if(res.success) {
       const downloadID = res.data?.download_id
@@ -128,7 +162,7 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
     }
     else{
       if(res.error.status === 401){
-        setErrors((errors) => ({ ...errors, form: "Not authorised to retrieve occurrences.  Please see FAQ"}))
+        setErrors((errors) => ({ ...errors, form: "Not authorised to retrieve data.  Please see FAQ"}))
       }
       else{
         setErrors((errors) => ({ ...errors, form: res.error.status}))
@@ -141,8 +175,8 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
     if (errors.form) {
       formErrors.push(errors.form)
     }
-    if (hasSubmitted && occurrenceErrorList.length) {
-      return formErrors.concat(occurrenceErrorList)
+    if (hasSubmitted && mciErrorList.length) {
+      return formErrors.concat(mciErrorList)
     }
     return formErrors
   }
@@ -158,55 +192,60 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
         error={getFormErrors()}
       >
         <EuiFormRow
-          label="Classification Level"
+          label="Indicator Type"
           isInvalid={Boolean(errors.email)}
         >
           <EuiSuperSelect
             options={[
               {
-                value: 'phylum',
-                inputDisplay: 'Phylum'
+                value: 'MCI',
+                inputDisplay: 'MCI'
               },
               {
-                value: 'kingdom',
-                inputDisplay: 'Kingdom'
+                value: 'PercentageEPTTaxa',
+                inputDisplay: 'Percentage EPT Taxa'
               },
               {
-                value: 'class',
-                inputDisplay: 'Class'
+                value: 'QMCI',
+                inputDisplay: 'QMCI'
               },
               {
-                value: 'order',
-                inputDisplay: 'Order'
+                value: 'ASPM',
+                inputDisplay: 'ASPM'
               },
               {
-                value: 'family',
-                inputDisplay: 'Family'
-              },
-              {
-                value: 'genus',
-                inputDisplay: 'Genus'
-              },
-              {
-                value: 'species',
-                inputDisplay: 'Species'
+                value: 'TaxaRichness',
+                inputDisplay: 'Taxa Richness'
               }
             ]}
-            valueOfSelected = {form.classificationLevel}
-            onChange={(value) => handleInputChange("classificationLevel", value)}
+            valueOfSelected = {form.indicator}
+            onChange={(value) => handleInputChange("indicator", value)}
             itemLayoutAlign="top"
-            isInvalid={Boolean(errors.classificationLevel)}s
+            isInvalid={Boolean(errors.indicator)}
           />
         </EuiFormRow>
         <EuiFormRow
-          label="Classification Name"
-          helpText="Select a classification level and name to filter the data by."
+          label="Value"
+          helpText="Input a value range to filter the data by. NB: An indicator type must be selected."
         >
-          <EuiFieldText
-            value={form.classificationName}
-            onChange={(e) => handleInputChange("classificationName", e.target.value)}
-            isInvalid={Boolean(errors.classificationName)}
-          />
+          <EuiSplitPanel.Outer>
+              <EuiSplitPanel.Inner>
+                <EuiFieldText
+                  placeholder="Enter a starting value"
+                  value={form.startValue}
+                  onChange={(e) => handleInputChange("startValue", e.target.value)}
+                  isInvalid={Boolean(errors.startValue)}
+                />
+              </EuiSplitPanel.Inner>
+              <EuiSplitPanel.Inner>
+                <EuiFieldText
+                  placeholder="Enter an end value"
+                  value={form.endValue}
+                  onChange={(e) => handleInputChange("endValue", e.target.value)}
+                  isInvalid={Boolean(errors.endValue)}
+                />
+              </EuiSplitPanel.Inner>
+          </EuiSplitPanel.Outer>
         </EuiFormRow>
           <EuiFormRow
             label="Year"
@@ -265,13 +304,49 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
         </EuiFormRow>
         <EuiFormRow
           label="Location Name"
-          helpText="If a region, please add 'region' after name"
         >
               <EuiFieldText
                 value={form.locationName}
                 onChange={(e) => handleInputChange("locationName", e.target.value)}
                 isInvalid={Boolean(errors.locationName)}
               />
+        </EuiFormRow>
+        <EuiFormRow
+          label="River Catchment"
+        >
+              <EuiFieldText
+                value={form.riverCatchment}
+                onChange={(e) => handleInputChange("riverCatchment", e.target.value)}
+                isInvalid={Boolean(errors.riverCatchment)}
+              />
+        </EuiFormRow>
+        <EuiFormRow
+          label="Landcover Type"
+        >
+          <EuiSuperSelect
+            options={[
+              {
+                value: 'Native vegetation',
+                inputDisplay: 'Native vegetation'
+              },
+              {
+                value: 'Pasture',
+                inputDisplay: 'Pasture'
+              },
+              {
+                value: 'Plantation forest',
+                inputDisplay: 'Plantation forest'
+              },
+              {
+                value: 'Urban',
+                inputDisplay: 'Urban'
+              }
+            ]}
+            valueOfSelected = {form.landcoverType}
+            onChange={(value) => handleInputChange("landcoverType", value)}
+            itemLayoutAlign="top"
+            isInvalid={Boolean(errors.landcoverType)}
+          />
         </EuiFormRow>
         <EuiSpacer />
         <EuiButton type="submit" isLoading={isLoading} fill>
@@ -285,12 +360,12 @@ function RetrieveDataForm({ occurrenceError, isLoading, requestData, retrieveDat
 
 export default connect(
   (state) => ({
-    occurenceError: state.occurrences.error,
-    isLoading: state.occurrences.isLoading,
-    data: state.occurrences.data,
+    occurenceError: state.mci.error,
+    isLoading: state.mci.isLoading,
+    data: state.mci.data,
   }),
   {
-    requestData: occurrenceActions.requestData,
-    retrieveData: occurrenceActions.retrieveData
+    requestData: mciActions.requestData,
+    retrieveData: mciActions.retrieveData
   }
 )(RetrieveDataForm)

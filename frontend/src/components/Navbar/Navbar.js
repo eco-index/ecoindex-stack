@@ -64,7 +64,10 @@ function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
         <EuiHeaderSectionItem border="right">
           <EuiHeaderLinks aria-label="app navigation links">
             <EuiHeaderLink iconType="download" href="/frontend/retrievedata">
-              Retrieve Data
+              Retrieve Occurrences
+            </EuiHeaderLink>
+            <EuiHeaderLink iconType="download" href="/frontend/retrievemcidata">
+              Retrieve MCI Data
             </EuiHeaderLink>
             <EuiHeaderLink iconType="help" href="/frontend/helppage">
               Help

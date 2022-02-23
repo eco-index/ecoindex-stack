@@ -8,21 +8,21 @@ class OccurrenceBase(CoreModel):
     All common characteristics of occurrences
     """
     scientific_name: str
-    observation_count: Optional [int] = 1
+    observation_count: Optional [int]
     observation_date: datetime.date
-    occurrence_latitude: Optional[float] = 1.0
-    occurrence_longitude: Optional[float] = 1.0
-    occurrence_elevation: Optional[float] = 1.0
-    occurrence_depth: Optional[float] = 1.0
+    occurrence_latitude: Optional[float]
+    occurrence_longitude: Optional[float]
+    occurrence_elevation: Optional[float]
+    occurrence_depth: Optional[float]
     taxon_rank: str
-    infraspecific_epithet: Optional[str] = 'fish'
-    occurrence_species: Optional[str] = 'fish'
-    occurrence_genus: Optional[str] = 'fish'
-    occurrence_family: Optional[str] = 'fish'
-    occurrence_order: Optional[str] = 'fish'
-    occurrence_class: Optional[str] = 'fish'
-    occurrence_phylum: Optional[str] = 'fish'
-    occurrence_kingdom: Optional[str] = 'fish'
+    infraspecific_epithet: Optional[str] 
+    occurrence_species: Optional[str]
+    occurrence_genus: Optional[str]
+    occurrence_family: Optional[str]
+    occurrence_order: Optional[str]
+    occurrence_class: Optional[str]
+    occurrence_phylum: Optional[str]
+    occurrence_kingdom: Optional[str]
 
 class OccurrenceCreate(OccurrenceBase):
     pass

@@ -12,6 +12,7 @@ import {
   RegistrationPage,
   ResetPasswordPage,
   RetrieveDataPage,
+  RetrieveMCIDataPage,
   UserManagementPage
 } from "../../components"
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/frontend/registration" element={<RegistrationPage />} />
           <Route path="/frontend/*" element={<NotFoundPage />} />
           <Route path="/frontend/retrievedata" element={<ProtectedRoute component ={RetrieveDataPage}/>} />
+          <Route path="/frontend/retrievemcidata" element={<ProtectedRoute component = {RetrieveMCIDataPage}/>} />
           <Route path="/frontend/helppage" element={<HelpPage/>} />
           <Route path="/frontend/usermanagement" element={<ProtectedRoute component = {UserManagementPage}/>} />
           <Route path="/frontend/resetpassword" element = {<ResetPasswordPage/>} />

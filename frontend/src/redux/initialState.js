@@ -12,5 +12,10 @@ export default {
   },
   ui: {
     toastList: [],
+  },
+  mci: {
+    isLoading: false,
+    error: false,
+    data: {}
   }
 }

@@ -46,11 +46,12 @@ services:
         - "traefik.docker.network=frontend-network"
         
     api:
-        image: ecoindex/ecoindex-backend:1.0.0
+        image: ecoindex/ecoindex-backend:latest
         restart: always
         volumes:
           - ../prodscripts/alembic/migrations:/backend/migrations
           - ../prodscripts/occurrence_download:/backend/occurrence_download
+          - ../prodscripts/templates/email:/backend/templates/email
         environment:
           - PORT=8000
         command: bash -c "alembic upgrade head && uvicorn app.api.server:app --root-path /api/v1 --host 0.0.0.0 --port 8000 --reload"
@@ -82,8 +83,5 @@ services:
         networks:
           - frontend-network
       
-volumes:
-    postgres_data:
-    migrations:
 networks:
     frontend-network:

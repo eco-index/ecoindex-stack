@@ -49,15 +49,33 @@ export default function LandingPage() {
               </p>
             </EuiText>
             <EuiSpacer size="l"/>
-            <FAQTitle>Retrieving Data:</FAQTitle>
+            <FAQTitle>Retrieving Data</FAQTitle>
               <EuiSpacer size="s"/>
               <EuiText>
                 <p>
                   Classification Level and name is based on the GBIF taxonomy as found <a href="https://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c" target="_blank" rel="noreferrer">here</a><br />
                   Regional boundaries are based on Regional Council boundaries provided by <a href = "https://datafinder.stats.govt.nz/layer/104254-regional-council-2020-generalised">Stats NZ</a><br />
-                  Iwi boundaries are as provided by <a href = "https://hub.arcgis.com/datasets/TPK::layer-iwi-areasofinterest/explore?location=-40.038265%2C-8.471169%2C6.24">Te Puna Kōkiri</a>
+                  Iwi boundaries are as provided by <a href = "https://hub.arcgis.com/datasets/TPK::layer-iwi-areasofinterest/explore?location=-40.038265%2C-8.471169%2C6.24">Te Puna Kōkiri</a><br />
+                  MCI data has been retrieved from <a href = "https://www.lawa.org.nz/download-data/">LAWA</a> categorised by river catchments
                 </p>
               </EuiText>
+            <EuiSpacer size = "l"/>
+            <FAQTitle>Data License</FAQTitle>
+            <EuiSpacer size = "s"/>
+            <EuiText>
+              <p>
+                Data has been retrieved from the following datasets under creative commons licensing:
+                <ul>
+                  <li>eBird Observation Dataset</li>
+                  <li>NZ National Vegetation Survey occurrence data (Landcare Research)</li>
+                  <li>iNaturalist Research-grade Observations</li>
+                  <li>Macrophyte Lake Data (NIWA)</li>
+                  <li>NZ Biodiversity Monitoring Network</li>
+                  <li>NZ Freshwater Fish Database (NIWA)</li>
+                  <li>River Ecology Monitoring 2006-2020 (LAWA)</li>
+                </ul>
+              </p>
+            </EuiText>
           </EuiPageContentBody>
         </EuiPageContent>
       </EuiPageBody>

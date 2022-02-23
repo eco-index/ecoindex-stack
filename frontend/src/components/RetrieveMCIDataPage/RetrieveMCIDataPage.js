@@ -7,7 +7,7 @@ import {
   EuiPageHeader,
   EuiPageHeaderSection,
 } from "@elastic/eui"
-import { RetrieveDataForm } from "../../components"
+import { RetrieveMCIDataForm } from ".."
 import styled from "styled-components"
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
@@ -27,12 +27,12 @@ export default function RetrieveDataPage() {
       <EuiPageBody component="section">
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
-            <RetrieveDataTitle>Retrieve Occurrences</RetrieveDataTitle>
+            <RetrieveDataTitle>Retrieve MCI Data</RetrieveDataTitle>
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
         <EuiPageContent verticalPosition="center" horizontalPosition="center">
           <EuiPageContentBody>
-            <RetrieveDataForm />
+            <RetrieveMCIDataForm />
           </EuiPageContentBody>
         </EuiPageContent>
       </EuiPageBody>

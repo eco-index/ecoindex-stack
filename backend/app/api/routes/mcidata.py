@@ -5,48 +5,47 @@ from fastapi.responses import StreamingResponse
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_401_UNAUTHORIZED
 import os
 
-from app.models.occurrence import OccurrencePublic
-from app.db.repositories.occurrence import OccurrenceRepository  
+from app.db.repositories.mci import MCIRepository  
 from app.api.dependencies.database import get_repository 
 from app.models.security import UserInDB
 from app.api.dependencies.auth import get_current_active_user
-from app.models.filter import Filter
+from app.models.filter import MCIFilter
 
 router = APIRouter()
 
-@router.get("/", name="occurrence:get_all_occurrences")
-async def get_all_occurrences(
-    occurrence_repo: OccurrenceRepository = Depends(get_repository(OccurrenceRepository)),
+@router.get("/", name="mcidata:get_all_mci_data")
+async def get_all_mci_data(
+    mci_repo: MCIRepository = Depends(get_repository(MCIRepository)),
     current_user: UserInDB = Depends(get_current_active_user),
 ) -> List[dict]:
     if current_user.role == "GUEST":
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
-            detail="Not authorized to retrieve occurrences."
+            detail="Not authorized to retrieve data."
         )
-    occurrences = await occurrence_repo.get_all_occurrences()
-    if not occurrences:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="No data found in occurrences.")
-    return occurrences
+    mcidata = await mci_repo.get_all_data()
+    if not mcidata:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="No data found for MCI.")
+    return mcidata
 
-@router.post("/", name="occurrence:create_occurrence_download", status_code=HTTP_201_CREATED)
-async def create_occurrence_download(
-    filter: Filter = Body(...),
-    occurrence_repo: OccurrenceRepository = Depends(get_repository(OccurrenceRepository)),
+@router.post("/", name="mcidata:create_mci_download", status_code=HTTP_201_CREATED)
+async def create_mci_download(
+    filter: MCIFilter = Body(...),
+    mci_repo: MCIRepository = Depends(get_repository(MCIRepository)),
     current_user: UserInDB = Depends(get_current_active_user),
 ):
     if current_user.role == "GUEST":
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
-            detail="Not authorized to create occurrences."
+            detail="Not authorized to create data download."
         )
-    res = await occurrence_repo.get_occurrences_by_filter(filter)
+    res = await mci_repo.get_data_by_filter(filter)
     payload = {
         "download_id" : res
     }
     return payload
 
-@router.get("/download/{download_id}", name="occurrence:retrieve_download")
+@router.get("/download/{download_id}", name="mcidata:retrieve_mci_download")
 async def get_download_by_id(
     download_id: int,
     current_user: UserInDB = Depends(get_current_active_user)
@@ -57,7 +56,7 @@ async def get_download_by_id(
             detail="Not authorized to retrieve downloads."
         )
 
-    path = "./occurrence_download/" + f"file_{download_id}.csv"
+    path = "./mci_download/" + f"file_{download_id}.csv"
     if not os.path.exists(path):
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,

@@ -18,3 +18,5 @@ export { default as ResetPasswordForm } from "./ResetPasswordForm/ResetPasswordF
 export { default as ResetPasswordPage } from "./ResetPasswordPage/ResetPasswordPage"
 export { default as ForgotPasswordForm } from "./ForgotPasswordForm/ForgotPasswordForm"
 export { default as ForgotPasswordPage } from "./ForgotPasswordPage/ForgotPasswordPage"
+export { default as RetrieveMCIDataPage } from "./RetrieveMCIDataPage/RetrieveMCIDataPage"
+export { default as RetrieveMCIDataForm } from "./RetrieveMCIDataForm/RetrieveMCIDataForm"

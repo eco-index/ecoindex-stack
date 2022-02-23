@@ -46,7 +46,7 @@ services:
       env_file:
         - ./prodscripts/env/.env
       volumes:
-        - /app/node_modules
+        - node_modules:/app/node_modules
         - ./frontend:/app
       networks:
         - frontend-network
@@ -63,6 +63,7 @@ services:
       volumes:
         - ./prodscripts/migrations:/backend/migrations
         - ./prodscripts/occurrence_download:/backend/occurrence_download
+        - ./prodscripts/mci_download:/backend/mci_download
         - ./prodscripts/templates/email:/backend/templates/email
       environment:
         - PORT=8000
@@ -95,6 +96,7 @@ services:
 
 volumes:
     postgres_data:
+    node_modules:
     # traefik-public-certificates:
 networks:
     frontend-network:
