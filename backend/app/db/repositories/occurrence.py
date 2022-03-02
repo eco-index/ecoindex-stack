@@ -34,6 +34,7 @@ def buildClassificationQueryLine(classification_level: str):
     return query
 
 def buildLocationQueryLine(location_name: str, location_type: str) :
+    query = ""
     if(location_name):
         query += "        AND LOWER(main.location.location_name) = LOWER(:location_name)"
     if(location_type):
