@@ -57,6 +57,8 @@ services:
         command: bash -c "alembic upgrade head && uvicorn app.api.server:app --root-path /api/v1 --host 0.0.0.0 --port 8000 --reload"
         env_file:
           - ../prodscripts/env/.env
+          - ./prodscripts/occurrence_download:/backend/occurrence_download
+          - ./prodscripts/mci_download:/backend/mci_download
         expose:
           - 8000
         depends_on:

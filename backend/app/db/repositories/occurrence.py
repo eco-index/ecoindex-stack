@@ -34,11 +34,10 @@ def buildClassificationQueryLine(classification_level: str):
     return query
 
 def buildLocationQueryLine(location_name: str, location_type: str) :
-    query = "        AND "
     if(location_name):
-        query += "LOWER(main.location.location_name) = LOWER(:location_name)"
+        query += "        AND LOWER(main.location.location_name) = LOWER(:location_name)"
     if(location_type):
-        query += "LOWER(main.locationref.locationtype) = LOWER(:location_type)"
+        query += "        AND LOWER(main.locationref.locationtype) = LOWER(:location_type)"
     return query
 
 def buildObservationDateQueryLine() :
