@@ -43,20 +43,17 @@ MAIL_FROM_NAME = config('MAIL_FROM_NAME', cast = str)
 DATABASE_URL = config(
     "DATABASE_URL",
     cast = DatabaseURL,
-    default = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@\
-              {POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    default = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 )
 
 TEST_DATABASE_URL = config(
     "TEST_DATABASE_URL",
     cast = DatabaseURL,
-    default = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@\
-              {POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_TEST_DB}"
+    default = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_TEST_DB}"
 )
 
 SERVER_URL = config(
     "SERVER_URL",
     cast = DatabaseURL,
-    default = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@\
-              {POSTGRES_SERVER}:{POSTGRES_PORT}"
+    default = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}"
 )

@@ -7,13 +7,15 @@ from logging.config import fileConfig
 import alembic
 from sqlalchemy import engine_from_config, create_engine, pool
 from psycopg2 import DatabaseError
+
+# Append app directory for importing config
+sys.path.append(str(pathlib.Path(__file__).resolve().parents[3]))
+
 from app.core.config import DATABASE_URL, TEST_DATABASE_URL, POSTGRES_TEST_DB 
 
 
 # Alembic Environment File
 
-# Append app directory for importing config
-sys.path.append(str(pathlib.Path(__file__).resolve().parents[3]))
 
 # Alembic Config object, which provides access to values within the .ini file
 config = alembic.context.config
