@@ -9,7 +9,10 @@ from starlette.status import (
     HTTP_404_NOT_FOUND, 
     HTTP_422_UNPROCESSABLE_ENTITY
 )
-from app.models.occurrence import OccurrencePublic, OccurrenceCreate, OccurrenceJson
+from app.models.occurrence import (
+    OccurrencePublic, 
+    OccurrenceCreate
+)
         
     # @pytest.mark.parametrize(
     #     "id, status_code",
@@ -76,10 +79,11 @@ class TestGetOccurrence:
     async def test_get_all_occurrences(
             self, 
             app: FastAPI, 
-            authorized_client: AsyncClient
+            authorized_client: AsyncClient,
+            test_occurrence: OccurrencePublic
             ) -> None:
         res = await authorized_client.get(
             app.url_path_for("occurrence:get_all_occurrences")
         )
-        assert res.status_code == HTTP_404_NOT_FOUND
+        assert res.status_code == HTTP_200_OK
 

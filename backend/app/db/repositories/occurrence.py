@@ -5,6 +5,7 @@ from datetime import datetime
 
 from app.db.repositories.base import BaseRepository
 from app.models.filter import Filter
+from app.models.occurrence import OccurrenceCreate, OccurrencePublic
 
 
 # Occurrence Repository Actions
@@ -31,6 +32,28 @@ GET_OCCURRENCES_BY_FILTER = """
 	FROM main.occurrence, main.location, main.locationref
     WHERE main.occurrence.id = main.location.occurrence_id
 	AND main.location.location_name = main.locationref.name"""
+
+INSERT_OCCURRENCE_QUERY = """
+    INSERT INTO main.occurrence (scientific_name, observation_count, \
+        observation_date, occurrence_latitude, occurrence_longitude, 
+        occurrence_elevation, occurrence_depth, taxon_rank, \
+        infraspecific_epithet, occurrence_species, occurrence_genus, \
+        occurrence_family, occurrence_order, occurrence_class, \
+        occurrence_phylum, occurrence_kingdom)
+    VALUES (:scientific_name, :observation_count, :observation_date, \
+        :occurrence_latitude, :occurrence_longitude, :occurrence_elevation, \
+        :occurrence_depth, :taxon_rank, :infraspecific_epithet, \
+        :occurrence_species, :occurrence_genus, :occurrence_family, \
+        :occurrence_order, :occurrence_class, :occurrence_phylum, \
+        :occurrence_kingdom)
+    RETURNING id, scientific_name, observation_count, observation_date, \
+        occurrence_latitude, occurrence_longitude, occurrence_elevation, \
+        occurrence_depth, taxon_rank, infraspecific_epithet,\
+        occurrence_species, occurrence_genus, occurrence_family, \
+        occurrence_order, occurrence_class, occurrence_phylum\
+        occurrence_kingdom, created_at, updated_at
+
+"""
 
 # Classification query builder
 def buildClassificationQueryLine(classification_level: str):
@@ -85,6 +108,15 @@ class OccurrenceRepository(BaseRepository):
         if not occurrences:
             return None
         return occurrences
+    
+    # Creates Occurrence for Testing Purposes
+    async def create_occurrence(self, occurrence: OccurrenceCreate
+            ) -> OccurrencePublic:
+        occurrence = await self.db.fetch_one(
+            query = INSERT_OCCURRENCE_QUERY,
+            values = occurrence.dict()
+        )
+        return OccurrencePublic(**occurrence)
 
     # Creates download by filter given and returns download id
     async def get_occurrences_by_filter(self, filter: Filter):

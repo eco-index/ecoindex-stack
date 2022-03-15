@@ -11,6 +11,8 @@ from alembic.config import Config
 
 from app.api.services import auth_service
 from app.models.security import UserInDB, UserCreate, UserUpdateRole
+from app.models.occurrence import OccurrencePublic, OccurrenceCreate
+from app.db.repositories.occurrence import OccurrenceRepository
 from app.db.repositories.users import UserRepository
 from app.core.config import JWT_TOKEN_PREFIX, TEST_DATABASE_URL
 
@@ -68,6 +70,33 @@ async def test_user(db: Database) -> UserInDB:
     )
     await user_repo.update_user_role(update_role_user = updateroleuser)
     return userindb
+
+@pytest.fixture
+async def test_occurrence(db: Database) -> OccurrencePublic:
+    occurrence_repo = OccurrenceRepository(db)
+    new_occurrence = OccurrenceCreate(
+        scientific_name = 'Branta canadensis maxima Delacour, 1951', 
+        observation_count = 1, 
+        observation_date =  '2015-05-22',
+        occurrence_latitude = -43.486205,
+        occurrence_longitude = 172.697703, 
+        occurrence_elevation = 0.0,
+        occurrence_depth = 0.0,
+        taxon_rank = 'SUBSPCIES',
+        infraspecific_epithet = '',
+        occurrence_species =  'Branta canadensis',
+        occurrence_genus = 'Branta',
+        occurrence_family = 'Anatidae',
+        occurrence_order = 'Anseriformes',
+        occurrence_class = 'Aves',
+        occurrence_phylum = 'Chordata',
+        occurrence_kingdom = 'Animalia'
+    )
+    occurrence = await occurrence_repo.create_occurrence(
+        occurrence = new_occurrence
+    )
+    return occurrence
+
 
 
 @pytest.fixture
