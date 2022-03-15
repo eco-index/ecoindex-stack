@@ -8,7 +8,6 @@ from app.models.security import (
 )
 from fastapi import HTTPException, status
 from pydantic import EmailStr
-from passlib.context import CryptContext
 from app.api.services import auth_service  
 from databases import Database  
 from typing import Optional, List

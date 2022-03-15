@@ -171,7 +171,8 @@ async def forgot_password(
     # Creates a reset token and associated link
     reset_token = auth_service.create_token_for_user(
         user = current_user,
-        reset = True)
+        reset = True
+    )
     link = PASSWORD_URL + reset_token
     # Creates email template
     params = {

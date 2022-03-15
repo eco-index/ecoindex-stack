@@ -31,13 +31,15 @@ def run_migrations_online() -> None:
     if os.environ.get("TESTING"):
         DB_URL = str(TEST_DATABASE_URL)  
     else:
-        str(DATABASE_URL)
+        DB_URL = str(DATABASE_URL)
 
     # Handle testing config for migrations
     if os.environ.get("TESTING"):
         # Connect to primary db
-        default_engine = create_engine(str(DATABASE_URL), 
-                                       isolation_level = "AUTOCOMMIT")
+        default_engine = create_engine(
+            str(DATABASE_URL), 
+            isolation_level = "AUTOCOMMIT"
+        )
         # Drop testing db if it exists and create a fresh one
         with default_engine.connect() as default_conn:
             default_conn.execute(
@@ -47,13 +49,13 @@ def run_migrations_online() -> None:
             default_conn.execute(f"DROP DATABASE IF EXISTS {POSTGRES_TEST_DB}")
             default_conn.execute(f"CREATE DATABASE {POSTGRES_TEST_DB}")
         # Reconnect to TestDB and create postGIS extension
-        default_engine = create_engine(
+        def_engine = create_engine(
             str(TEST_DATABASE_URL), 
             isolation_level = "AUTOCOMMIT"
         )
-        with default_engine.connect() as default_conn:
-            default_conn.execute("CREATE EXTENSION postgis;")
-            default_conn.execute("CREATE EXTENSION postgis_topology;")
+        with def_engine.connect() as def_conn:
+            def_conn.execute("CREATE EXTENSION postgis;")
+            def_conn.execute("CREATE EXTENSION postgis_topology;")
 
     connectable = config.attributes.get("connection", None)
     config.set_main_option("sqlalchemy.url", DB_URL)  
