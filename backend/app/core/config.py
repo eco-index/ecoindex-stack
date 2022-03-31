@@ -6,7 +6,7 @@ config = Config(".env")
 
 PROJECT_NAME = "ecoindex"
 VERSION = "1.0.0"
-API_PREFIX = "/api/v1"
+API_PREFIX = config("API_PREFIX", cast = str)
 
 SECRET_KEY = config("SECRET_KEY", cast = Secret)
 POSTGRES_USER = config("POSTGRES_USER", cast = str)

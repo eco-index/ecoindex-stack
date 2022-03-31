@@ -65,6 +65,7 @@ services:
         - ./prodscripts/occurrence_download:/backend/occurrence_download
         - ./prodscripts/mci_download:/backend/mci_download
         - ./prodscripts/templates/email:/backend/templates/email
+        - ./prodscripts/location_data:/backend/location_data
       environment:
         - PORT=8000
       command: bash -c "alembic upgrade head && uvicorn app.api.server:app --root-path /api/v1 --host 0.0.0.0 --port 8000 --reload"

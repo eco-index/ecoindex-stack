@@ -1,5 +1,6 @@
-import pytest
 from typing import Union, Type, Optional
+
+import pytest
 from httpx import AsyncClient
 from fastapi import FastAPI, HTTPException
 import jwt
@@ -12,6 +13,8 @@ from starlette.status import (
 
 from pydantic import ValidationError
 from starlette.datastructures import Secret
+from databases import Database
+
 from app.core.config import (
     SECRET_KEY, 
     ALGORITHM, 
@@ -19,7 +22,6 @@ from app.core.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
 from app.models.security import UserInDB, UserPublic
-from databases import Database
 from app.db.repositories.users import UserRepository
 from app.api.services import auth_service
 
@@ -267,14 +269,14 @@ class TestUserLogin:
     )
 
     async def test_user_with_wrong_creds_doesnt_receive_token(
-        self,
-        app: FastAPI,
-        client: AsyncClient,
-        test_user: UserInDB,
-        credential: str,
-        wrong_value: str,
-        status_code: int,
-    ) -> None:
+            self,
+            app: FastAPI,
+            client: AsyncClient,
+            test_user: UserInDB,
+            credential: str,
+            wrong_value: str,
+            status_code: int,
+            ) -> None:
         client.headers["content-type"] = "application/x-www-form-urlencoded"
         user_data = test_user.dict()
         # insert user's plaintext password

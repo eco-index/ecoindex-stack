@@ -5,7 +5,8 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from starlette.status import (
     HTTP_201_CREATED, 
-    HTTP_404_NOT_FOUND
+    HTTP_404_NOT_FOUND,
+    HTTP_422_UNPROCESSABLE_ENTITY
 )
 
 from app.db.repositories.occurrence import OccurrenceRepository  
@@ -50,7 +51,7 @@ async def get_all_occurrences(
 @router.post("/", name = "occurrence:create_occurrence_download", 
              status_code = HTTP_201_CREATED)
 async def create_occurrence_download(
-        filter: Filter = Body(...),
+        filter: Filter,
         occurrence_repo: OccurrenceRepository = 
             Depends(get_repository(OccurrenceRepository)),
         current_user: UserInDB = Depends(get_current_active_user),
@@ -61,7 +62,7 @@ async def create_occurrence_download(
         detail = "Not authorized to create data download."
         )
     # Create data download based on filter and retrieve id
-    id = await occurrence_repo.get_occurrences_by_filter(filter)
+    id = await occurrence_repo.create_filtered_download(filter = filter)
     # Returns download id
     payload = {
         "download_id" : id

@@ -1,5 +1,7 @@
 import warnings
 import os
+import csv
+import sys
 
 import pytest
 from fastapi import FastAPI
@@ -14,13 +16,13 @@ from app.models.security import UserInDB, UserCreate, UserUpdateRole
 from app.models.occurrence import OccurrencePublic, OccurrenceCreate
 from app.db.repositories.occurrence import OccurrenceRepository
 from app.db.repositories.users import UserRepository
-from app.core.config import JWT_TOKEN_PREFIX, TEST_DATABASE_URL
+from app.core.config import JWT_TOKEN_PREFIX, TEST_DATABASE_URL, DATABASE_URL
 
 # Apply migrations at beginning and end of testing session
 @pytest.fixture(scope = "session")
 def apply_migrations():
     warnings.filterwarnings("ignore", category = DeprecationWarning)
-    os.environ["TESTING"] = "1"
+    os.environ["TESTING"] = "0"
     config = Config("alembic.ini")
     
     alembic.command.upgrade(config, "head")
@@ -40,7 +42,7 @@ async def db(app: FastAPI) -> Database:
     db = Database(TEST_DATABASE_URL, min_size=2, max_size=10)  
     await db.connect()
     yield db
-    db.disconnect()
+    await db.disconnect()
     
 # Make requests in our tests
 @pytest.fixture
@@ -82,7 +84,7 @@ async def test_occurrence(db: Database) -> OccurrencePublic:
         occurrence_longitude = 172.697703, 
         occurrence_elevation = 0.0,
         occurrence_depth = 0.0,
-        taxon_rank = 'SUBSPCIES',
+        taxon_rank = 'SUBSPECIES',
         infraspecific_epithet = '',
         occurrence_species =  'Branta canadensis',
         occurrence_genus = 'Branta',
@@ -92,12 +94,26 @@ async def test_occurrence(db: Database) -> OccurrencePublic:
         occurrence_phylum = 'Chordata',
         occurrence_kingdom = 'Animalia'
     )
+    csv.field_size_limit(sys.maxsize)
+    location_file = csv.DictReader(open(
+        "./location_data/regional_council_boundaries_clipped.csv"
+    ))
+    for row in location_file:
+        name = row['name']
+        polygon = row['polygon']
+        type = row['locationtype']
+        await occurrence_repo.add_location(
+            name = name,
+            polygon = polygon,
+            location_type = type
+        )
+    occurrence = await occurrence_repo.get_occurrence_by_id(id = 1)
+    if occurrence:
+        return occurrence
     occurrence = await occurrence_repo.create_occurrence(
         occurrence = new_occurrence
     )
     return occurrence
-
-
 
 @pytest.fixture
 def authorized_client(client: AsyncClient, test_user: UserInDB) -> AsyncClient:
