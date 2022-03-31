@@ -46,7 +46,7 @@ services:
         - "traefik.docker.network=frontend-network"
         
     api:
-        image: ecoindex/ecoindex-backend:latest
+        image: ecoindex/ecoindex-backend:stable
         restart: always
         volumes:
           - ../prodscripts/alembic/migrations:/backend/migrations
@@ -72,6 +72,32 @@ services:
           - "traefik.http.middlewares.api-stripprefix.stripPrefix.prefixes=/api/v1"
           - "traefik.http.routers.backend.middlewares=api-stripprefix"
           - "traefik.docker.network=frontend-network"
+
+    apiv2:
+        image: ecoindex/ecoindex-backend:latest
+        restart: always
+        volumes:
+          - ./prodscripts/migrations:/backend/migrations
+          - ./prodscripts/occurrence_download:/backend/occurrence_download
+          - ./prodscripts/mci_download:/backend/mci_download
+          - ./prodscripts/templates/email:/backend/templates/email
+        environment:
+          - PORT=9000
+        command: bash -c "alembic upgrade head && uvicorn app.api.server:app --root-path /api/v2 --host 0.0.0.0 --port 9000 --reload"
+        env_file:
+          - ./prodscripts/envV2/.env
+        expose:
+          - 9000
+        depends_on:
+          - db
+        networks:
+          - frontend-network
+        labels:
+          - "traefik.enable=true"
+          - "traefik.http.routers.backendv2.rule=Host(`localhost`) && PathPrefix(`/api/v2`)"
+          - "traefik.http.routers.backendv2.entrypoints=web"
+          - "traefik.http.middlewares.apiv2-stripprefix.stripPrefix.prefixes=/api/v2"
+          - "traefik.http.routers.backendv2.middlewares=apiv2-stripprefix"
         
     db:
         image: postgis/postgis

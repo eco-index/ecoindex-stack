@@ -1,7 +1,8 @@
-from typing import Optional
 import datetime
+from typing import Optional
 
 from app.models.core import IDModelMixin, CoreModel
+
 
 class OccurrenceBase(CoreModel):
     """
