@@ -1,10 +1,10 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.logger import logger
-import logging
 
 from app.core import config, tasks  
-
 from app.api.routes import router as api_router
 
 gunicorn_logger = logging.getLogger('gunicorn.error')

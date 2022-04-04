@@ -1,5 +1,7 @@
-from typing import Optional, List
+from typing import Optional
+
 from pydantic import EmailStr, constr
+
 from app.models.core import DateTimeModelMixin, IDModelMixin, CoreModel
 from app.core.config import JWT_AUDIENCE, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import datetime, timedelta
@@ -69,7 +71,8 @@ class JWTMeta(CoreModel):
     iss: str = "ecoindex.io"
     aud: str = JWT_AUDIENCE
     iat: float = datetime.timestamp(datetime.utcnow())
-    exp: float = datetime.timestamp(datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    exp: float = (datetime.timestamp(datetime.utcnow() 
+        + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)))
 
 class JWTCreds(CoreModel):
     """
