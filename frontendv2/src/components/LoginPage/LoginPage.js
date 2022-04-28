@@ -27,7 +27,7 @@ export default function LoginPage() {
       <EuiPageBody component="section">
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
-            <LandingTitle>Eco-index Datastore V1</LandingTitle>
+            <LandingTitle>Eco-index Datastore V2</LandingTitle>
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
         <EuiPageContent verticalPosition="center" horizontalPosition="center">

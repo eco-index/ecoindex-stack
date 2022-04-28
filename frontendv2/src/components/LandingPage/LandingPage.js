@@ -21,7 +21,7 @@ export default function LandingPage() {
       <EuiPageBody component="section">
         <EuiFlexGroup direction="column" alignItems="center">
           <EuiFlexItem>
-            <LandingTitle>Eco-index Datastore V1</LandingTitle>
+            <LandingTitle>Eco-index Datastore V2</LandingTitle>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageBody>

@@ -5,9 +5,9 @@ import {
   EuiPageContent,
   EuiPageContentBody,
   EuiPageHeader,
-  EuiPageHeaderSection
+  EuiPageHeaderSection,
 } from "@elastic/eui"
-import { LoginForm } from "../../components"
+import { ForgotPasswordForm} from "../../components"
 import styled from "styled-components"
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
@@ -17,22 +17,22 @@ const StyledEuiPageHeader = styled(EuiPageHeader)`
   justify-content: center;
   align-items: center;
 `
-const LandingTitle = styled.h1`
-  font-size: 3.5rem;
+const ForgotPasswordTitle = styled.h1`
+  font-size: 3rem;
   margin: 2rem 0;
 `
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
     <StyledEuiPage>
       <EuiPageBody component="section">
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
-            <LandingTitle>Eco-index Datastore V1</LandingTitle>
+            <ForgotPasswordTitle>Reset Password</ForgotPasswordTitle>
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
         <EuiPageContent verticalPosition="center" horizontalPosition="center">
           <EuiPageContentBody>
-            <LoginForm />
+            <ForgotPasswordForm/>
           </EuiPageContentBody>
         </EuiPageContent>
       </EuiPageBody>

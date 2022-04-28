@@ -5,9 +5,9 @@ import {
   EuiPageContent,
   EuiPageContentBody,
   EuiPageHeader,
-  EuiPageHeaderSection
+  EuiPageHeaderSection,
 } from "@elastic/eui"
-import { LoginForm } from "../../components"
+import { UserManagementTable } from "../../components"
 import styled from "styled-components"
 const StyledEuiPage = styled(EuiPage)`
   flex: 1;
@@ -17,22 +17,22 @@ const StyledEuiPageHeader = styled(EuiPageHeader)`
   justify-content: center;
   align-items: center;
 `
-const LandingTitle = styled.h1`
-  font-size: 3.5rem;
+const UserManagementTitle = styled.h1`
+  font-size: 3rem;
   margin: 2rem 0;
 `
-export default function LoginPage() {
+export default function UserManagementPage() {
   return (
     <StyledEuiPage>
       <EuiPageBody component="section">
         <StyledEuiPageHeader>
           <EuiPageHeaderSection>
-            <LandingTitle>Eco-index Datastore V1</LandingTitle>
+            <UserManagementTitle>User Management</UserManagementTitle>
           </EuiPageHeaderSection>
         </StyledEuiPageHeader>
         <EuiPageContent verticalPosition="center" horizontalPosition="center">
           <EuiPageContentBody>
-            <LoginForm />
+            <UserManagementTable />
           </EuiPageContentBody>
         </EuiPageContent>
       </EuiPageBody>

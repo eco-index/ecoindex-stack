@@ -55,6 +55,29 @@ services:
         - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/frontend`)"
         - "traefik.http.routers.frontend.entrypoints=web"
 
+  frontendv2:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      context: ./frontendv2
+      dockerfile: Dockerfile
+    restart: always
+    expose:
+      - 3000
+    env_file:
+      - ./prodscripts/envv2/.env
+    volumes:
+      - node_modulesv2:/app/node_modules
+      - ./frontendv2:/app
+    networks:
+      - frontend-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontendv2.rule=Host(`localhost`) && PathPrefix(`/frontendv2`)"
+      - "traefik.http.routers.frontendv2.entrypoints=web"
+
+
   api:
       build: 
         context: ./backend
@@ -83,6 +106,35 @@ services:
         - "traefik.http.routers.backend.entrypoints=web"
         - "traefik.http.middlewares.api-stripprefix.stripPrefix.prefixes=/api/v1"
         - "traefik.http.routers.backend.middlewares=api-stripprefix"
+
+  apiv2:
+      build: 
+        context: ./backend
+        dockerfile: Dockerfile
+      restart: always
+      volumes:
+        - ./prodscripts/migrations:/backend/migrations
+        - ./prodscripts/occurrence_download:/backend/occurrence_download
+        - ./prodscripts/mci_download:/backend/mci_download
+        - ./prodscripts/templates/email:/backend/templates/email
+        - ./prodscripts/location_data:/backend/location_data
+      environment:
+        - PORT=8000
+      command: bash -c "alembic upgrade head && uvicorn app.api.server:app --root-path /api/v2 --host 0.0.0.0 --port 8000 --reload"
+      env_file:
+        - ./prodscripts/envv2/.env
+      expose:
+        - 8000
+      depends_on:
+        - db
+      networks:
+        - frontend-network
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.backend.rule=Host(`localhost`) && PathPrefix(`/api/v2`)"
+        - "traefik.http.routers.backend.entrypoints=web"
+        - "traefik.http.middlewares.apiv2-stripprefix.stripPrefix.prefixes=/api/v2"
+        - "traefik.http.routers.backend.middlewares=apiv2-stripprefix"
           
   db:
       image: postgis/postgis
@@ -98,6 +150,7 @@ services:
 volumes:
     postgres_data:
     node_modules:
+    node_modulesv2:
     # traefik-public-certificates:
 networks:
     frontend-network:
