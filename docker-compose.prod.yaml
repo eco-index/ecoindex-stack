@@ -56,7 +56,7 @@ services:
       expose:
         - 3000
       env_file:
-        - ./prodscripts/envv2/.env
+        - ../prodscripts/envv2/.env
       volumes:
         - /app/node_modules
         - ./frontendv2:/app
