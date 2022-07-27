@@ -20,16 +20,16 @@ export default function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/frontend" element={<ProtectedRouteLanding component={LandingPage}/>} />
-          <Route path="/frontend/login" element={<LoginPage />} />
-          <Route path="/frontend/registration" element={<RegistrationPage />} />
-          <Route path="/frontend/*" element={<NotFoundPage />} />
-          <Route path="/frontend/retrievedata" element={<ProtectedRoute component ={RetrieveDataPage}/>} />
-          <Route path="/frontend/retrievemcidata" element={<ProtectedRoute component = {RetrieveMCIDataPage}/>} />
-          <Route path="/frontend/helppage" element={<HelpPage/>} />
-          <Route path="/frontend/usermanagement" element={<ProtectedRoute component = {UserManagementPage}/>} />
-          <Route path="/frontend/resetpassword" element = {<ResetPasswordPage/>} />
-          <Route path="/frontend/forgotpassword" element = {<ForgotPasswordPage/>} />
+          <Route path="/frontend/v1" element={<ProtectedRouteLanding component={LandingPage}/>} />
+          <Route path="/frontend/v1/login" element={<LoginPage />} />
+          <Route path="/frontend/v1/registration" element={<RegistrationPage />} />
+          <Route path="/frontend/v1/*" element={<NotFoundPage />} />
+          <Route path="/frontend/v1/retrievedata" element={<ProtectedRoute component ={RetrieveDataPage}/>} />
+          <Route path="/frontend/v1/retrievemcidata" element={<ProtectedRoute component = {RetrieveMCIDataPage}/>} />
+          <Route path="/frontend/v1/helppage" element={<HelpPage/>} />
+          <Route path="/frontend/v1/usermanagement" element={<ProtectedRoute component = {UserManagementPage}/>} />
+          <Route path="/frontend/v1/resetpassword" element = {<ResetPasswordPage/>} />
+          <Route path="/frontend/v1/forgotpassword" element = {<ForgotPasswordPage/>} />
         </Routes>
       </Layout>
     </BrowserRouter>
