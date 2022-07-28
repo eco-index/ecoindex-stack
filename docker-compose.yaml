@@ -52,7 +52,7 @@ services:
         - frontend-network
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/frontend`)"
+        - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/frontend/v1`)"
         - "traefik.http.routers.frontend.entrypoints=web"
 
   frontendv2:
@@ -74,7 +74,7 @@ services:
       - frontend-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontendv2.rule=Host(`localhost`) && PathPrefix(`/frontendv2`)"
+      - "traefik.http.routers.frontendv2.rule=Host(`localhost`) && PathPrefix(`/frontend/v2`)"
       - "traefik.http.routers.frontendv2.entrypoints=web"
 
 

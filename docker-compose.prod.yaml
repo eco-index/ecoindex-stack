@@ -41,7 +41,7 @@ services:
         - frontend-network
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.frontend.rule=Host(`ecoindex-01.sci.waikato.ac.nz`) && PathPrefix(`/frontend`)"
+        - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/frontend`)"
         - "traefik.http.routers.frontend.entrypoints=web"
         - "traefik.docker.network=frontend-network"
     
@@ -64,7 +64,7 @@ services:
         - frontend-network
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.frontendv2.rule=Host(`ecoindex-01.sci.waikato.ac.nz`) && PathPrefix(`/frontendv2`)"
+        - "traefik.http.routers.frontendv2.rule=Host(`localhost`) && PathPrefix(`/frontendv2`)"
         - "traefik.http.routers.frontendv2.entrypoints=web"
         - "traefik.docker.network=frontend-network"
         
@@ -90,7 +90,7 @@ services:
           - frontend-network
         labels:
           - "traefik.enable=true"
-          - "traefik.http.routers.backend.rule=Host(`ecoindex-01.sci.waikato.ac.nz`) && PathPrefix(`/api/v1`)"
+          - "traefik.http.routers.backend.rule=Host(`localhost`) && PathPrefix(`/api/v1`)"
           - "traefik.http.routers.backend.entrypoints=web"
           - "traefik.http.middlewares.api-stripprefix.stripPrefix.prefixes=/api/v1"
           - "traefik.http.routers.backend.middlewares=api-stripprefix"
