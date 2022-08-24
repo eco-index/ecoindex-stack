@@ -78,7 +78,7 @@ function ResetPasswordForm({ authError, isLoading, updateUserPassword }) {
             iconType: "alert",
             toastLifeTimeMs: 15000,
           })
-          navigate("/frontend/login")
+          navigate("/frontendv1/login")
     }
     else{
       setErrors((errors) => ({ ...errors, form: "Update password failed, please check input fields"}))

@@ -6,7 +6,7 @@ function ProtectedRouteLanding({ user, userLoaded, isAuthenticated, component: C
   const isAuthed = isAuthenticated && Boolean(user?.email)
   const navigate = useNavigate()
   if (!isAuthed){
-    navigate("/frontend/login")
+    navigate("/frontendv1/login")
   }
   return <Component {...props} />
 }

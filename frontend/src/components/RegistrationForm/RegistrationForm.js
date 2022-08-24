@@ -38,7 +38,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
   // if the user is already authenticated, redirect them to the landing page
   React.useEffect(() => {
     if (user?.email && isAuthenticated) {
-      navigate("/frontend")
+      navigate("/frontendv1")
     }
   }, [user, navigate, isAuthenticated])
   const validateInput = (label, value) => {
@@ -93,7 +93,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
           iconType: "alert",
           toastLifeTimeMs: 15000,
         })
-        navigate("/frontend")
+        navigate("/frontendv1")
     }
     else{
       setErrors((errors) => ({ ...errors, form: "Update password failed, please check input fields"}))
@@ -179,7 +179,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
       </EuiForm>
       <EuiSpacer size="xl" />
       <NeedAccountLink>
-        Already have an account? Log in <Link to="/frontend/login">here</Link>.
+        Already have an account? Log in <Link to="/frontendv1/login">here</Link>.
       </NeedAccountLink>
     </RegistrationFormWrapper>
   )

@@ -47,7 +47,7 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
         iconType: "alert",
         toastLifeTimeMs: 15000,
       })
-      navigate("/frontend")
+      navigate("/frontendv1")
     }
   }, [user, navigate, isAuthenticated, addToast])
 
@@ -127,11 +127,11 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
       </EuiForm>
       <EuiSpacer size="xl" />
       <NeedAccountLink>
-        Need an account? Sign up <Link to="/frontend/registration">here</Link>.
+        Need an account? Sign up <Link to="/frontendv1/registration">here</Link>.
       </NeedAccountLink>
       <EuiSpacer size="s" />
       <NeedAccountLink>
-        Forgot your password?  Follow this <Link to ="/frontend/forgotpassword">link</Link>.
+        Forgot your password?  Follow this <Link to ="/v1/forgotpassword">link</Link>.
       </NeedAccountLink>
     </LoginFormWrapper>
   )

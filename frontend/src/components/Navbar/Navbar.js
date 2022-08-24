@@ -32,7 +32,7 @@ function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
       iconType: "alert",
       toastLifeTimeMs: 15000,
     })
-    navigate("/frontend/login")
+    navigate("/frontendv1/login")
     logUserOut()
   }
   
@@ -46,7 +46,7 @@ function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
     }
     return (
       <EuiHeaderSectionItemButton>
-          <Link to="/frontend/login">
+          <Link to="/frontendv1/login">
             <EuiAvatar size="l" color="#1E90FF" name="login" imageUrl={loginIcon}/>
           </Link>
       </EuiHeaderSectionItemButton>
@@ -57,22 +57,22 @@ function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
     <EuiHeader style={props.style || {}}>
       <EuiHeaderSection>
         <EuiHeaderSectionItem border="right">
-          <LogoSection href="/frontend">
+          <LogoSection href="/frontendv1">
             <EuiIcon type="database" color="#1E90FF" size="l" /> Eco-index Datastore
           </LogoSection>
         </EuiHeaderSectionItem>
         <EuiHeaderSectionItem border="right">
           <EuiHeaderLinks aria-label="app navigation links">
-            <EuiHeaderLink iconType="download" href="/frontend/retrievedata">
+            <EuiHeaderLink iconType="download" href="/frontendv1/retrievedata">
               Retrieve Occurrences
             </EuiHeaderLink>
-            <EuiHeaderLink iconType="download" href="/frontend/retrievemcidata">
+            <EuiHeaderLink iconType="download" href="/frontendv1/retrievemcidata">
               Retrieve MCI Data
             </EuiHeaderLink>
-            <EuiHeaderLink iconType="help" href="/frontend/helppage">
+            <EuiHeaderLink iconType="help" href="/frontendv1/helppage">
               Help
             </EuiHeaderLink>
-            <EuiHeaderLink iconType="wrench" href="/frontend/usermanagement">
+            <EuiHeaderLink iconType="wrench" href="/frontendv1/usermanagement">
               User Management
             </EuiHeaderLink>
           </EuiHeaderLinks>

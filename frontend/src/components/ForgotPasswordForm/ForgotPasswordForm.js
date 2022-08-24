@@ -61,7 +61,7 @@ function ForgotPasswordForm({ authError, isLoading, resetPasswordRequest }) {
             toastLifeTimeMs: 15000,
             text: "Please check your email for a reset password link"
         })
-        navigate("/frontend/login")
+        navigate("/frontendv1/login")
     }
     else{
       setErrors((errors) => ({ ...errors, form: "Please enter a valid email."}))
