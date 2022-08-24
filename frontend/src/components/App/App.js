@@ -20,16 +20,16 @@ export default function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/frontend/v1" element={<ProtectedRouteLanding component={LandingPage}/>} />
-          <Route path="/frontend/v1/login" element={<LoginPage />} />
-          <Route path="/frontend/v1/registration" element={<RegistrationPage />} />
-          <Route path="/frontend/v1/*" element={<NotFoundPage />} />
-          <Route path="/frontend/v1/retrievedata" element={<ProtectedRoute component ={RetrieveDataPage}/>} />
-          <Route path="/frontend/v1/retrievemcidata" element={<ProtectedRoute component = {RetrieveMCIDataPage}/>} />
-          <Route path="/frontend/v1/helppage" element={<HelpPage/>} />
-          <Route path="/frontend/v1/usermanagement" element={<ProtectedRoute component = {UserManagementPage}/>} />
-          <Route path="/frontend/v1/resetpassword" element = {<ResetPasswordPage/>} />
-          <Route path="/frontend/v1/forgotpassword" element = {<ForgotPasswordPage/>} />
+          <Route path="/frontendv1" element={<ProtectedRouteLanding component={LandingPage}/>} />
+          <Route path="/frontendv1/login" element={<LoginPage />} />
+          <Route path="/frontendv1/registration" element={<RegistrationPage />} />
+          <Route path="/frontendv1/*" element={<NotFoundPage />} />
+          <Route path="/frontendv1/retrievedata" element={<ProtectedRoute component ={RetrieveDataPage}/>} />
+          <Route path="/frontendv1/retrievemcidata" element={<ProtectedRoute component = {RetrieveMCIDataPage}/>} />
+          <Route path="/frontendv1/helppage" element={<HelpPage/>} />
+          <Route path="/frontendv1/usermanagement" element={<ProtectedRoute component = {UserManagementPage}/>} />
+          <Route path="/frontendv1/resetpassword" element = {<ResetPasswordPage/>} />
+          <Route path="/frontendv1/forgotpassword" element = {<ForgotPasswordPage/>} />
         </Routes>
       </Layout>
     </BrowserRouter>
