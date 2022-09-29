@@ -24,6 +24,7 @@ const LogoSection = styled(EuiHeaderLink)`
 function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
   const navigate = useNavigate()
   const { addToast } = useToasts()
+  const {REACT_APP_PUBLIC_URL} = process.env
   const handleLogout = () => {
     addToast({
       id: `auth-toast-loggedout`,
@@ -32,7 +33,7 @@ function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
       iconType: "alert",
       toastLifeTimeMs: 15000,
     })
-    navigate("/frontendv1/login")
+    navigate({REACT_APP_PUBLIC_URL} + "/login")
     logUserOut()
   }
   
@@ -46,7 +47,7 @@ function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
     }
     return (
       <EuiHeaderSectionItemButton>
-          <Link to="/frontendv1/login">
+          <Link to={REACT_APP_PUBLIC_URL + "/login"}>
             <EuiAvatar size="l" color="#1E90FF" name="login" imageUrl={loginIcon}/>
           </Link>
       </EuiHeaderSectionItemButton>
@@ -57,22 +58,22 @@ function Navbar({ user, logUserOut, isAuthenticated, ...props }) {
     <EuiHeader style={props.style || {}}>
       <EuiHeaderSection>
         <EuiHeaderSectionItem border="right">
-          <LogoSection href="/frontendv1">
+          <LogoSection href={REACT_APP_PUBLIC_URL}>
             <EuiIcon type="database" color="#1E90FF" size="l" /> Eco-index Datastore
           </LogoSection>
         </EuiHeaderSectionItem>
         <EuiHeaderSectionItem border="right">
           <EuiHeaderLinks aria-label="app navigation links">
-            <EuiHeaderLink iconType="download" href="/frontendv1/retrievedata">
+            <EuiHeaderLink iconType="download" href={REACT_APP_PUBLIC_URL + "/retrievedata"}>
               Retrieve Occurrences
             </EuiHeaderLink>
-            <EuiHeaderLink iconType="download" href="/frontendv1/retrievemcidata">
+            <EuiHeaderLink iconType="download" href={REACT_APP_PUBLIC_URL + "/retrievemcidata"}>
               Retrieve MCI Data
             </EuiHeaderLink>
-            <EuiHeaderLink iconType="help" href="/frontendv1/helppage">
+            <EuiHeaderLink iconType="help" href={REACT_APP_PUBLIC_URL + "/helppage"}>
               Help
             </EuiHeaderLink>
-            <EuiHeaderLink iconType="wrench" href="/frontendv1/usermanagement">
+            <EuiHeaderLink iconType="wrench" href={REACT_APP_PUBLIC_URL + "/usermanagement"}>
               User Management
             </EuiHeaderLink>
           </EuiHeaderLinks>

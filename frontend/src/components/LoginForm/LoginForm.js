@@ -38,6 +38,7 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
     // set an error if the validation function did NOT return true
     setErrors((errors) => ({ ...errors, [label]: !isValid }))
   }
+  const {REACT_APP_PUBLIC_URL} = process.env
   React.useEffect(() => {
     if (user?.email && isAuthenticated) {
       addToast({
@@ -47,7 +48,7 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
         iconType: "alert",
         toastLifeTimeMs: 15000,
       })
-      navigate("/frontendv1")
+      navigate({REACT_APP_PUBLIC_URL})
     }
   }, [user, navigate, isAuthenticated, addToast])
 
@@ -127,11 +128,11 @@ function LoginForm({ user, authError, isLoading, isAuthenticated, requestUserLog
       </EuiForm>
       <EuiSpacer size="xl" />
       <NeedAccountLink>
-        Need an account? Sign up <Link to="/frontendv1/registration">here</Link>.
+        Need an account? Sign up <Link to={REACT_APP_PUBLIC_URL + "/registration"}>here</Link>.
       </NeedAccountLink>
       <EuiSpacer size="s" />
       <NeedAccountLink>
-        Forgot your password?  Follow this <Link to ="/v1/forgotpassword">link</Link>.
+        Forgot your password?  Follow this <Link to ={REACT_APP_PUBLIC_URL + "/forgotpassword"}>link</Link>.
       </NeedAccountLink>
     </LoginFormWrapper>
   )

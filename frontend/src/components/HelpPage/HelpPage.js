@@ -42,8 +42,9 @@ export default function LandingPage() {
             <FAQTitle>Creating an Account</FAQTitle>
             <EuiSpacer size="s"/>
             <EuiText>
+              const {REACT_APP_PUBLIC_URL} = process.env
               <p>
-                Accounts can be created <a href="/frontendv1/registration">here</a><br />
+                Accounts can be created <a href={REACT_APP_PUBLIC_URL + "/registration"}>here</a><br />
                 Please note that accounts will need to be approved before data retrieval is possible.<br />
                 To request approval, please send an email to konnyb@waikato.ac.nz 
               </p>

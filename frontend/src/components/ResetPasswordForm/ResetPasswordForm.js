@@ -31,6 +31,7 @@ function ResetPasswordForm({ authError, isLoading, updateUserPassword }) {
   const { addToast } = useToasts()
   const navigate = useNavigate()
   const authErrorList = extractErrorMessages(authError) 
+  const {REACT_APP_PUBLIC_URL} = process.env
   // if the user is already authenticated, redirect them to the landing page
   const validateInput = (label, value) => {
     // grab validation function and run it on input if it exists
@@ -78,7 +79,7 @@ function ResetPasswordForm({ authError, isLoading, updateUserPassword }) {
             iconType: "alert",
             toastLifeTimeMs: 15000,
           })
-          navigate("/frontendv1/login")
+          navigate({REACT_APP_PUBLIC_URL} + "/login")
     }
     else{
       setErrors((errors) => ({ ...errors, form: "Update password failed, please check input fields"}))

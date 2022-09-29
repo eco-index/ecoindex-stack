@@ -35,10 +35,11 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
   const { addToast } = useToasts()
   const navigate = useNavigate()
   const authErrorList = extractErrorMessages(authError) 
+  const {REACT_APP_PUBLIC_URL} = process.env
   // if the user is already authenticated, redirect them to the landing page
   React.useEffect(() => {
     if (user?.email && isAuthenticated) {
-      navigate("/frontendv1")
+      navigate({REACT_APP_PUBLIC_URL})
     }
   }, [user, navigate, isAuthenticated])
   const validateInput = (label, value) => {
@@ -93,7 +94,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
           iconType: "alert",
           toastLifeTimeMs: 15000,
         })
-        navigate("/frontendv1")
+        navigate({REACT_APP_PUBLIC_URL})
     }
     else{
       setErrors((errors) => ({ ...errors, form: "Update password failed, please check input fields"}))
@@ -179,7 +180,7 @@ function RegistrationForm({ authError, user, isLoading, isAuthenticated, registe
       </EuiForm>
       <EuiSpacer size="xl" />
       <NeedAccountLink>
-        Already have an account? Log in <Link to="/frontendv1/login">here</Link>.
+        Already have an account? Log in <Link to={REACT_APP_PUBLIC_URL + "/login"}>here</Link>.
       </NeedAccountLink>
     </RegistrationFormWrapper>
   )

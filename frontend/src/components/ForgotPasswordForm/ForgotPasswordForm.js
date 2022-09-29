@@ -18,6 +18,7 @@ const ForgotPasswordFormWrapper = styled.div`
 `
 
 function ForgotPasswordForm({ authError, isLoading, resetPasswordRequest }) {
+  const {REACT_APP_PUBLIC_URL} = process.env
   const [form, setForm] = React.useState({
     email: ""
   })
@@ -61,7 +62,7 @@ function ForgotPasswordForm({ authError, isLoading, resetPasswordRequest }) {
             toastLifeTimeMs: 15000,
             text: "Please check your email for a reset password link"
         })
-        navigate("/frontendv1/login")
+        navigate({REACT_APP_PUBLIC_URL} + "/login")
     }
     else{
       setErrors((errors) => ({ ...errors, form: "Please enter a valid email."}))

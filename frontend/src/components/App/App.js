@@ -20,16 +20,17 @@ export default function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/frontendv1" element={<ProtectedRouteLanding component={LandingPage}/>} />
-          <Route path="/frontendv1/login" element={<LoginPage />} />
-          <Route path="/frontendv1/registration" element={<RegistrationPage />} />
-          <Route path="/frontendv1/*" element={<NotFoundPage />} />
-          <Route path="/frontendv1/retrievedata" element={<ProtectedRoute component ={RetrieveDataPage}/>} />
-          <Route path="/frontendv1/retrievemcidata" element={<ProtectedRoute component = {RetrieveMCIDataPage}/>} />
-          <Route path="/frontendv1/helppage" element={<HelpPage/>} />
-          <Route path="/frontendv1/usermanagement" element={<ProtectedRoute component = {UserManagementPage}/>} />
-          <Route path="/frontendv1/resetpassword" element = {<ResetPasswordPage/>} />
-          <Route path="/frontendv1/forgotpassword" element = {<ForgotPasswordPage/>} />
+          const { REACT_APP_PUBLIC_URL } = process.env;
+          <Route path={REACT_APP_PUBLIC_URL} element={<ProtectedRouteLanding component={LandingPage}/>} />
+          <Route path={REACT_APP_PUBLIC_URL + "/login"} element={<LoginPage />} />
+          <Route path={REACT_APP_PUBLIC_URL + "/registration"} element={<RegistrationPage />} />
+          <Route path={REACT_APP_PUBLIC_URL + "/*"} element={<NotFoundPage />} />
+          <Route path={REACT_APP_PUBLIC_URL + "/retrievedata"} element={<ProtectedRoute component ={RetrieveDataPage}/>} />
+          <Route path={REACT_APP_PUBLIC_URL + "/retrievemcidata"} element={<ProtectedRoute component = {RetrieveMCIDataPage}/>} />
+          <Route path={REACT_APP_PUBLIC_URL + "/helppage"} element={<HelpPage/>} />
+          <Route path={REACT_APP_PUBLIC_URL + "/usermanagement"} element={<ProtectedRoute component = {UserManagementPage}/>} />
+          <Route path={REACT_APP_PUBLIC_URL + "/resetpassword"} element = {<ResetPasswordPage/>} />
+          <Route path={REACT_APP_PUBLIC_URL + "/forgotpassword"} element = {<ForgotPasswordPage/>} />
         </Routes>
       </Layout>
     </BrowserRouter>
