@@ -16,11 +16,11 @@ import {
   UserManagementPage
 } from "../../components"
 export default function App() {
+  const { REACT_APP_PUBLIC_URL } = process.env;
   return (
     <BrowserRouter>
       <Layout>
         <Routes>
-          const { REACT_APP_PUBLIC_URL } = process.env;
           <Route path={REACT_APP_PUBLIC_URL} element={<ProtectedRouteLanding component={LandingPage}/>} />
           <Route path={REACT_APP_PUBLIC_URL + "/login"} element={<LoginPage />} />
           <Route path={REACT_APP_PUBLIC_URL + "/registration"} element={<RegistrationPage />} />
